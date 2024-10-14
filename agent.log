@@ -1,0 +1,5 @@
+2024-10-14 00:08:11,228 - logger - ERROR - LLM初始化过程中发生了一个错误: Your default credentials were not found. To set up Application Default Credentials, see https://cloud.google.com/docs/authentication/external/set-up-adc for more information.
+2024-10-14 00:25:55,552 - logger - ERROR - LLM初始化过程中发生了一个错误: 1 validation error for ChatGoogleGenerativeAI
+__root__
+  Did not find google_api_key, please add an environment variable `GOOGLE_API_KEY` which contains it, or pass `google_api_key` as a named parameter. (type=value_error)
+2024-10-14 00:34:04,763 - logger - ERROR - LLM初始化过程中发生了一个错误: 'model'
