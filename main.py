@@ -1,13 +1,9 @@
-# 提示: 在运行此脚本之前，请先安装 docx2md
-# pip install docx2md
-
-
 # 模块导入
 
 import os
-import docx
 import subprocess
 import google.generativeai as genai
+import docx_to_md
 
 # API 设置
 GEMINI_API_KEY = "AIzaSyDCNWIp1_9QqBfzYqAuRvzy4s8pfevQk5s"
@@ -27,20 +23,40 @@ generation_config_dict = {
 }
 
 
-# 函数封装部分
-def DOCXtoMD(docx_file_path, md_file_path):
-    try:
-        docx2md_command = f"python -m docx2md {docx_file_path} {md_file_path}"
-        subprocess.run(docx2md_command, shell=True)
-        print(f"[提示] 转换成功，输出文件保存在: {md_file_path}")
-    except Exception as e:
-        print(f"[错误] 转换失败，原因: {e}")
+# 函数: 转换docx文件为md文件
+def load_file(docx_input, md_output):
+    docx_to_md.convert(docx_input, md_output)
+    with open(md_output, 'r', encoding='utf-8') as load_md_file:
+        md_content = load_md_file.read()
+    return md_content
 
+# 预设提示词和模型
 
-# 预设提示词
-prompt = '''
+# report_template
+docx_path = "./docx_files/仅页1_固定资产贷款调查报告模板.docx"
+md_path = "./md_files/仅页1_固定资产贷款调查报告模板.md"
+report_template = load_file(docx_path, md_path)
+# reference_report
+docx_path = "./docx_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.docx"
+md_path = "./md_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.md"
+reference_report = load_file(docx_path, md_path)
+# enterprise_info
+docx_path = ""
+md_path = ""
+enterprise_info = load_file(docx_path, md_path)
+
+prompt = f'''
+你是广州银行的一名资深分析师，主要职责是评估企业或个人的信用风险，分析借款人的财务状况，并根据评估结果撰写授信报告，以供银行管理层或风险控制部门决策。
+你具备一流的财务分析能力和风险管理能力，拥有多年的工作经验和丰富的专业技能。
+现在，你需要运用你的专业知识和技能，仔细研究现有的固定资产贷款调查报告的参考文件，并准备好完成我接下来提出的任务。
+
+文件名：仅页1_晶正鑫：固定资产贷款调查报告20220512.md
+---文件头分隔符---
+{reference_report}
+---文件尾分隔符---
+
+以上是参考文件，请仔细阅读。
 '''
-
 model = genai.GenerativeModel(
     model_name="gemini-1.5-pro",  # 模型名称, 可替换为gemini-1.5-flash, gemini-1.5-pro-exp-0827等
     generation_config=generation_config_dict,  # 导入生成CFG字典
@@ -49,10 +65,23 @@ model = genai.GenerativeModel(
 
 
 # LLM部分
+user_input = f'''
+接下来，你需要根据我提供的"企业信息"，并参考"你刚刚阅读的报告文件的内容"，填充"固定贷款调查报告模板"，以生成一份markdown格式的"该企业的固定资产贷款调查报告"。
+
+文件名：仅页1_固定资产贷款调查报告模板.md
+---文件头分隔符---
+{report_template}
+---文件尾分隔符---
+
+文件名：企业信息.md
+---文件头分隔符---
+{enterprise_info}
+---文件尾分隔符---
+
+以上是工作需要用到的材料文件，请开始你的工作。
+'''  # 输入端
+
 chat_history = []
-
-user_input = input("You > ")  # 输入端
-
 chat_session = model.start_chat(history=chat_history)
 
 response = chat_session.send_message(user_input)
