@@ -88,6 +88,9 @@ model = genai.GenerativeModel(
 )
 
 # 输入端
+chat_history = []
+chat_session = model.start_chat(history=chat_history)
+
 user_input = f'''
 接下来，你需要根据我提供的"企业信息"，并参考"你刚刚阅读的报告文件的内容"，填充"固定贷款调查报告模板"。
 
@@ -104,9 +107,6 @@ user_input = f'''
 以上是工作需要用到的材料文件，请开始你的工作，生成一份markdown格式的报告，其标题应该替换为"该企业的固定资产贷款调查报告"。
 注意，你只需要输出报告内容，不需要输出文件头和文件尾以及其他说明信息和语句。
 '''
-
-chat_history = []
-chat_session = model.start_chat(history=chat_history)
 
 # 输出端
 response = chat_session.send_message(user_input)
