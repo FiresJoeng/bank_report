@@ -2,6 +2,7 @@
 import os
 import google.generativeai as genai
 import pypandoc
+import docx_to_md
 
 # API 设置
 GEMINI_API_KEY = "AIzaSyDCNWIp1_9QqBfzYqAuRvzy4s8pfevQk5s"
@@ -26,7 +27,17 @@ def load_file(docx_input, md_output):
         pypandoc.convert_file(docx_input, 'md', outputfile=md_output)
     except Exception as error:
         print(f"[错误] 转换{docx_input}失败! 原因: {error}")
-        exit()
+        return None
+    with open(md_output, 'r', encoding='utf-8') as load_md_file:
+        md_content = load_md_file.read()
+    return md_content
+
+def load_file_2(docx_input, md_output):
+    try:
+        docx_to_md.convert(docx_input, md_output)
+    except Exception as error:
+        print(f"[错误] 转换{docx_input}失败! 原因: {error}")
+        return None
     with open(md_output, 'r', encoding='utf-8') as load_md_file:
         md_content = load_md_file.read()
     return md_content
@@ -40,7 +51,7 @@ report_template = load_file(docx_path, md_path)
 # reference_report
 docx_path = "./docx_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.docx"
 md_path = "./md_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.md"
-reference_report = load_file(docx_path, md_path)
+reference_report = load_file_2(docx_path, md_path)
 
 # enterprise_info
 docx_path = "./docx_files/广东省电子信息产业集团有限公司-企业基础信用报告-20241015155110.docx"
@@ -70,7 +81,7 @@ model = genai.GenerativeModel(
 
 # 输入端
 user_input = f'''
-接下来，你需要根据我提供的"企业信息"，并参考"你刚刚阅读的报告文件的内容"，填充"固定贷款调查报告模板"，以生成一份"该企业的固定资产贷款调查报告"。
+接下来，你需要根据我提供的"企业信息"，并参考"你刚刚阅读的报告文件的内容"，填充"固定贷款调查报告模板"。
 
 文件名：仅页1_固定资产贷款调查报告模板.md
 ---文件头分隔符---
@@ -82,7 +93,7 @@ user_input = f'''
 {enterprise_info}
 ---文件尾分隔符---
 
-以上是工作需要用到的材料文件，请开始你的工作。注意，你只需要输出markdown格式的报告内容，不需要输出文件头和文件尾以及其他说明信息和语句。
+以上是工作需要用到的材料文件，请开始你的工作，生成一份"该企业的固定资产贷款调查报告"。
 '''
 
 chat_history = []
@@ -90,6 +101,9 @@ chat_session = model.start_chat(history=chat_history)
 
 # 输出端
 response = chat_session.send_message(user_input)
+generated_report = './md_files/已生成_固定资产贷款调查报告.md'
+with open(generated_report, 'w', encoding='utf-8') as save_md_file:
+    save_md_file.write(response.text)
 print(f"Gemini > {response.text}")
 
 chat_history.append({"role": "user", "parts": [user_input]})
