@@ -100,7 +100,9 @@ model = genai.GenerativeModel(
 chat_history = []
 chat_session = model.start_chat(history=chat_history)
 
-user_input = f'''
+for i in range(2):
+    if i == 0:
+        user_input = f'''
 接下来，你需要根据我提供的"企业信息"，并参考"你刚刚阅读的报告文件的内容"，填充"固定贷款调查报告模板"。
 
 文件名: 仅首页_固定资产贷款调查报告模板.md
@@ -116,12 +118,23 @@ user_input = f'''
 以上是工作需要用到的材料文件，请开始你的工作，生成一份markdown格式的报告，其标题应该替换为"该企业的固定资产贷款调查报告"。
 注意，你只需要输出报告内容，不需要输出文件头和文件尾以及其他说明信息和语句。
 '''
+    else:
+        user_input = '''很好，请检查二次复查你刚刚生成的报告数据是否合理正确。
+        检查如：分期次数和第一次还本时间是否合理、还款方式的分期还本次数与还款计划表格中的期数是否一致、还款计划表格数据是否符合提款权限、贷款期限的设置等。
+        注意，这些数据必须要保证高度准确性、合理性、严谨性，请务必认真核查。
+        当报告填写完毕后仍有留空的'{}'，请直接用空格替换。报告的还款计划表格不应当还保留'...'、'n'等字符所在的列，请删除。并且地，也不应当在还款结束之后还给出期数单元格列，应在其后直接计算合计。
+        请按照以上要求复查并修订报告。复查完毕后，你只需要输出markdown格式的修订版报告内容，不需要输出文件头和文件尾以及其他说明信息和语句。'''
 
-# 输出端
-response = chat_session.send_message(user_input)
-print(f'''---文件头分隔符---
+    # 输出端
+    response = chat_session.send_message(user_input)
+    print(f'''---文件头分隔符---
 {response.text}
 ---文件尾分隔符---''')
+
+    chat_history.append({"role": "user", "parts": [user_input]})
+    chat_history.append({"role": "model", "parts": [response.text]})
+
+# 循环结束后保存文件
 try:
     generated_md_report = './md_files/已生成_固定资产贷款调查报告.md'
     generated_docx_report = './docx_files/已生成_固定资产贷款调查报告.docx'
@@ -131,6 +144,3 @@ try:
                           outputfile=generated_docx_report)
 except Exception as error:
     print(f"[错误] 保存文件失败! 原因: {error}")
-
-chat_history.append({"role": "user", "parts": [user_input]})
-chat_history.append({f"role": "model", "parts": [response.text]})
