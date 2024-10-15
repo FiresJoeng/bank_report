@@ -7,7 +7,7 @@ GEMINI_API_KEY = "AIzaSyDCNWIp1_9QqBfzYqAuRvzy4s8pfevQk5s"
 genai.configure(api_key=GEMINI_API_KEY)
 
 # 代理设置 (For Clash)
-os.environ['https_proxy'] = 'http://127.0.0.1:7890'
+os.environ['https_proxy'] = 'https://127.0.0.1:7890'
 os.environ['http_proxy'] = 'http://127.0.0.1:7890'
 os.environ['all_proxy'] = 'socks5://127.0.0.1:7890'
 
