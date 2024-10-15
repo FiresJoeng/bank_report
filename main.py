@@ -100,6 +100,8 @@ model = genai.GenerativeModel(
 chat_history = []
 chat_session = model.start_chat(history=chat_history)
 
+responses = []
+
 for i in range(2):
     if i == 0:
         user_input = f'''
@@ -120,27 +122,31 @@ for i in range(2):
 '''
     else:
         user_input = '''很好，请检查二次复查你刚刚生成的报告数据是否合理正确。
-        检查如：分期次数和第一次还本时间是否合理、还款方式的分期还本次数与还款计划表格中的期数是否一致、还款计划表格数据是否符合提款权限、贷款期限的设置等。
+        检查如：分期次数和第一次还本时间是否合理、还本比例加起来是否等于100%、还款计划表格数据是否符合提款权限、贷款期限的设置等。
         注意，这些数据必须要保证高度准确性、合理性、严谨性，请务必认真核查。
         当报告填写完毕后仍有留空的'{}'，请直接用空格替换。报告的还款计划表格不应当还保留'...'、'n'等字符所在的列，请删除。并且地，也不应当在还款结束之后还给出期数单元格列，应在其后直接计算合计。
         请按照以上要求复查并修订报告。复查完毕后，你只需要输出markdown格式的修订版报告内容，不需要输出文件头和文件尾以及其他说明信息和语句。'''
 
     # 输出端
     response = chat_session.send_message(user_input)
-    print(f'''---文件头分隔符---
+    responses.append(response.text)
+    print(f'''[提示] 第{i+1}次对话的回答: 
+
+---文件头分隔符---
 {response.text}
 ---文件尾分隔符---''')
 
     chat_history.append({"role": "user", "parts": [user_input]})
     chat_history.append({"role": "model", "parts": [response.text]})
 
-# 循环结束后保存文件
+# 循环结束后保存文件（只保存修订报告）
 try:
     generated_md_report = './md_files/已生成_固定资产贷款调查报告.md'
     generated_docx_report = './docx_files/已生成_固定资产贷款调查报告.docx'
     with open(generated_md_report, 'w', encoding='utf-8') as save_md_file:
-        save_md_file.write(response.text)
+        save_md_file.write(responses[1])  # 只保存第二次对话的回答
     pypandoc.convert_file(generated_md_report, 'docx',
                           outputfile=generated_docx_report)
+    print(f"[提示] 保存 {generated_md_report} 和 {generated_docx_report} 成功!")
 except Exception as error:
     print(f"[错误] 保存文件失败! 原因: {error}")
