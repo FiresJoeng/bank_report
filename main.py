@@ -1,7 +1,6 @@
 # 模块导入
 
 import os
-import subprocess
 import google.generativeai as genai
 import docx_to_md
 
