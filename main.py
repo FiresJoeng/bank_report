@@ -93,7 +93,8 @@ user_input = f'''
 {enterprise_info}
 ---文件尾分隔符---
 
-以上是工作需要用到的材料文件，请开始你的工作，生成一份"该企业的固定资产贷款调查报告"。
+以上是工作需要用到的材料文件，请开始你的工作，生成一份markdown格式的报告，其标题应该替换为"该企业的固定资产贷款调查报告"。
+注意，你只需要输出报告内容，不需要输出文件头和文件尾以及其他说明信息和语句。
 '''
 
 chat_history = []
@@ -101,10 +102,17 @@ chat_session = model.start_chat(history=chat_history)
 
 # 输出端
 response = chat_session.send_message(user_input)
-generated_report = './md_files/已生成_固定资产贷款调查报告.md'
-with open(generated_report, 'w', encoding='utf-8') as save_md_file:
-    save_md_file.write(response.text)
-print(f"Gemini > {response.text}")
+print(f'''---文件头分隔符---
+{response.text}
+---文件尾分隔符---''')
+try:
+    generated_md_report = './md_files/已生成_固定资产贷款调查报告.md'
+    generated_docx_report = './docx_files/已生成_固定资产贷款调查报告.docx'
+    with open(generated_md_report, 'w', encoding='utf-8') as save_md_file:
+        save_md_file.write(response.text)
+    pypandoc.convert_file(generated_md_report, 'docx', outputfile=generated_docx_report)
+except Exception as error:
+    print(f"[错误] 保存文件失败! 原因: {error}")
 
 chat_history.append({"role": "user", "parts": [user_input]})
 chat_history.append({f"role": "model", "parts": [response.text]})
