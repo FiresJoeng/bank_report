@@ -46,16 +46,21 @@ def f_pypandoc(docx_input, md_output):
     return md_content
 
 
-# report_template
-docx_path = "./docx_files/仅页1_固定资产贷款调查报告模板.docx"
-md_path = "./md_files/仅页1_固定资产贷款调查报告模板.md"
-report_template = f_docx_to_md(docx_path, md_path)
+# 废案: report_template
+# docx_path = "./docx_files/仅页1_固定资产贷款调查报告模板.docx"
+# md_path = "./md_files/仅页1_固定资产贷款调查报告模板.md"
+# report_template = f_docx_to_md(docx_path, md_path)
+report_template = './md_files/仅首页_固定资产贷款调查报告模板.md'
+with open(report_template, 'r', encoding='utf-8') as load_md_file:
+    report_template = load_md_file.read()
 
-# reference_report
-docx_path = "./docx_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.docx"
-md_path = "./md_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.md"
-reference_report = f_docx_to_md(docx_path, md_path)
-
+# 废案: reference_report
+# docx_path = "./docx_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.docx"
+# md_path = "./md_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.md"
+# reference_report = f_docx_to_md(docx_path, md_path)
+reference_report = './md_files/仅首页_晶正鑫：固定资产贷款调查报告20220512.md'
+with open(reference_report, 'r', encoding='utf-8') as load_md_file:
+    reference_report = load_md_file.read()
 # enterprise_info
 docx_path = "./docx_files/广东省电子信息产业集团有限公司-企业基础信用报告-20241015155110.docx"
 md_path = "./md_files/广东省电子信息产业集团有限公司-企业基础信用报告-20241015155110.md"
