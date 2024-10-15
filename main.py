@@ -23,6 +23,7 @@ generation_config_dict = {
 
 # 函数: 转换docx文件为md文件
 
+
 def f_docx_to_md(docx_input, md_output):
     try:
         docx_to_md.convert_file(docx_input, md_output)
@@ -50,21 +51,29 @@ def f_pypandoc(docx_input, md_output):
 # docx_path = "./docx_files/仅页1_固定资产贷款调查报告模板.docx"
 # md_path = "./md_files/仅页1_固定资产贷款调查报告模板.md"
 # report_template = f_docx_to_md(docx_path, md_path)
+
+# report_template
 report_template = './md_files/仅首页_固定资产贷款调查报告模板.md'
 with open(report_template, 'r', encoding='utf-8') as load_md_file:
     report_template = load_md_file.read()
+
 
 # 废案: reference_report
 # docx_path = "./docx_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.docx"
 # md_path = "./md_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.md"
 # reference_report = f_docx_to_md(docx_path, md_path)
+
+# reference_report
 reference_report = './md_files/仅首页_晶正鑫：固定资产贷款调查报告20220512.md'
 with open(reference_report, 'r', encoding='utf-8') as load_md_file:
     reference_report = load_md_file.read()
+
+
 # enterprise_info
 docx_path = "./docx_files/广东省电子信息产业集团有限公司-企业基础信用报告-20241015155110.docx"
 md_path = "./md_files/广东省电子信息产业集团有限公司-企业基础信用报告-20241015155110.md"
 enterprise_info = f_pypandoc(docx_path, md_path)
+
 
 # prompt
 prompt = f'''
@@ -72,7 +81,7 @@ prompt = f'''
 你具备一流的财务分析能力和风险管理能力，拥有多年的工作经验和丰富的专业技能。
 现在，你需要运用你的专业知识和技能，仔细研究现有的固定资产贷款调查报告的参考文件，并准备好完成我接下来提出的任务。
 
-文件名：仅页1_晶正鑫：固定资产贷款调查报告20220512.md
+文件名: 仅首页_晶正鑫：固定资产贷款调查报告20220512.md
 ---文件头分隔符---
 {reference_report}
 ---文件尾分隔符---
@@ -94,12 +103,12 @@ chat_session = model.start_chat(history=chat_history)
 user_input = f'''
 接下来，你需要根据我提供的"企业信息"，并参考"你刚刚阅读的报告文件的内容"，填充"固定贷款调查报告模板"。
 
-文件名：仅页1_固定资产贷款调查报告模板.md
+文件名: 仅首页_固定资产贷款调查报告模板.md
 ---文件头分隔符---
 {report_template}
 ---文件尾分隔符---
 
-文件名：企业信息.md
+文件名: 企业信息.md
 ---文件头分隔符---
 {enterprise_info}
 ---文件尾分隔符---
@@ -118,7 +127,8 @@ try:
     generated_docx_report = './docx_files/已生成_固定资产贷款调查报告.docx'
     with open(generated_md_report, 'w', encoding='utf-8') as save_md_file:
         save_md_file.write(response.text)
-    pypandoc.convert_file(generated_md_report, 'docx', outputfile=generated_docx_report)
+    pypandoc.convert_file(generated_md_report, 'docx',
+                          outputfile=generated_docx_report)
 except Exception as error:
     print(f"[错误] 保存文件失败! 原因: {error}")
 
