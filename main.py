@@ -1,5 +1,6 @@
 # 模块导入
 import os
+import docx
 import google.generativeai as genai
 
 # API 设置
@@ -7,9 +8,8 @@ GEMINI_API_KEY = "AIzaSyDCNWIp1_9QqBfzYqAuRvzy4s8pfevQk5s"
 genai.configure(api_key=GEMINI_API_KEY)
 
 # 代理设置 (For Clash)
-os.environ['https_proxy'] = 'https://127.0.0.1:7890'
+os.environ['https_proxy'] = 'http://127.0.0.1:7890'
 os.environ['http_proxy'] = 'http://127.0.0.1:7890'
-os.environ['all_proxy'] = 'socks5://127.0.0.1:7890'
 
 # 生成CFG设置
 generation_config_dict = {
@@ -19,6 +19,22 @@ generation_config_dict = {
     "max_output_tokens": 8192,  # 生成的最大token数量，超过此值，会截断
     "response_mime_type": "text/plain",  # 应答格式，可替换为text/json
 }
+
+
+def read_docx(docx_files_path):
+    doc = docx.Document(docx_files_path)
+    full_text = []
+    for para in doc.paragraphs:
+        full_text.append(para.text)
+    return '\n'.join(full_text)
+
+
+def convert_to_md(text):
+    # 简单转换为标题 (假设每一段第一个单词为 'Heading' 表示为标题)
+    # 将文档中类似标题的部分转为 Markdown 的 #
+    md_text = text.replace('\nHeading', '\n# Heading')
+    return md_text
+
 
 # 模型设置
 prompt = '''
@@ -32,11 +48,6 @@ model = genai.GenerativeModel(
     generation_config=generation_config_dict,  # 导入生成CFG字典
     system_instruction=prompt,  # Prompt 设置
 )
-
-
-# 文件读取
-def load_files():
-    pass
 
 
 # 聊天记录

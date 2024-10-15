@@ -21,8 +21,8 @@ def save_md(md_text, output_path):
         f.write(md_text)
 
 # 示例用法
-docx_file = 'your_word_file.docx'
-md_file = 'output_file.md'
+docx_file = './docx_files/附件：2.固定资产贷款调查报告模板（修订）.docx'
+md_file = './md_files/附件：2.固定资产贷款调查报告模板（修订）.md'
 
 word_text = read_docx(docx_file)
 md_text = convert_to_md(word_text)
