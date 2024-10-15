@@ -30,6 +30,7 @@ def load_file(docx_input, md_output):
         md_content = load_md_file.read()
     return md_content
 
+
 # 预设提示词和模型
 
 # report_template
