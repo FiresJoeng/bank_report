@@ -1,6 +1,12 @@
+# 提示: 在运行此脚本之前，请先安装 docx2md
+# pip install docx2md
+
+
 # 模块导入
+
 import os
 import docx
+import subprocess
 import google.generativeai as genai
 
 # API 设置
@@ -21,26 +27,18 @@ generation_config_dict = {
 }
 
 
-def read_docx(docx_files_path):
-    doc = docx.Document(docx_files_path)
-    full_text = []
-    for para in doc.paragraphs:
-        full_text.append(para.text)
-    return '\n'.join(full_text)
+# 函数封装部分
+def DOCXtoMD(docx_file_path, md_file_path):
+    try:
+        docx2md_command = f"python -m docx2md {docx_file_path} {md_file_path}"
+        subprocess.run(docx2md_command, shell=True)
+        print(f"[提示] 转换成功，输出文件保存在: {md_file_path}")
+    except Exception as e:
+        print(f"[错误] 转换失败，原因: {e}")
 
 
-def convert_to_md(text):
-    # 简单转换为标题 (假设每一段第一个单词为 'Heading' 表示为标题)
-    # 将文档中类似标题的部分转为 Markdown 的 #
-    md_text = text.replace('\nHeading', '\n# Heading')
-    return md_text
-
-
-# 模型设置
+# 预设提示词
 prompt = '''
-你是广州银行的一名资深分析师，主要职责是评估企业或个人的信用风险，分析借款人的财务状况，并根据评估结果撰写授信报告，以供银行管理层或风险控制部门决策。
-你具备一流的财务分析能力和风险管理能力，拥有多年的工作经验和丰富的专业技能。
-现在，你的任务是遍历数据mapping表的内容，生成中间表格。
 '''
 
 model = genai.GenerativeModel(
@@ -50,20 +48,15 @@ model = genai.GenerativeModel(
 )
 
 
-# 聊天记录
-history = []
+# LLM部分
+chat_history = []
 
-# 对话循环体
-while True:
-    user_input = input("You > ")  # 输入端
+user_input = input("You > ")  # 输入端
 
-    chat_session = model.start_chat(
-        history=history
-    )
+chat_session = model.start_chat(history=chat_history)
 
-    response = chat_session.send_message(user_input)
-    print(f"Gemini > {response.text}")  # 输出端
+response = chat_session.send_message(user_input)
+print(f"Gemini > {response.text}")  # 输出端
 
-    # 记录聊天历史
-    history.append({"role": "user", "parts": [user_input]})
-    history.append({f"role": "model", "parts": [response.text]})
+chat_history.append({"role": "user", "parts": [user_input]})
+chat_history.append({f"role": "model", "parts": [response.text]})

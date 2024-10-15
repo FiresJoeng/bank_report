@@ -1,31 +1,16 @@
-import docx
+# Before running this script, please install docx2md first
+# pip install docx2md
 
-# 读取 Word 文档
-def read_docx(file_path):
-    doc = docx.Document(file_path)
-    full_text = []
-    for para in doc.paragraphs:
-        full_text.append(para.text)
-    return '\n'.join(full_text)
+import subprocess
 
-# 转换为 Markdown 格式
-def convert_to_md(text):
-    md_text = text
-    # 简单转换为标题 (假设每一段第一个单词为 'Heading' 表示为标题)
-    md_text = md_text.replace('\nHeading', '\n# Heading')  # 将文档中类似标题的部分转为 Markdown 的 #
-    return md_text
+# 定义输入和输出文件路径
+docx_file = './docx_files/仅页1_固定资产贷款调查报告模板.docx'
+md_file = './md_files/仅页1_固定资产贷款调查报告模板.md'
 
-# 保存为 Markdown 文件
-def save_md(md_text, output_path):
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(md_text)
+# 构建命令行命令
+command = f"python -m docx2md {docx_file} {md_file}"
 
-# 示例用法
-docx_file = './docx_files/附件：2.固定资产贷款调查报告模板（修订）.docx'
-md_file = './md_files/附件：2.固定资产贷款调查报告模板（修订）.md'
+# 调用命令行接口
+subprocess.run(command, shell=True)
 
-word_text = read_docx(docx_file)
-md_text = convert_to_md(word_text)
-save_md(md_text, md_file)
-
-print(f"Markdown 文件已保存至: {md_file}")
+print(f"转换完成，输出文件保存在: {md_file}")
