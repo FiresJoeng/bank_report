@@ -1,9 +1,7 @@
 # 模块导入
-
 import os
 import google.generativeai as genai
 import pypandoc
-import docx_to_md
 
 # API 设置
 GEMINI_API_KEY = "AIzaSyDCNWIp1_9QqBfzYqAuRvzy4s8pfevQk5s"
@@ -22,10 +20,13 @@ generation_config_dict = {
     "response_mime_type": "text/plain",  # 应答格式，可替换为text/json
 }
 
-
 # 函数: 转换docx文件为md文件
 def load_file(docx_input, md_output):
-    pypandoc.convert_file(docx_input, 'md', outputfile=md_output)
+    try:
+        pypandoc.convert_file(docx_input, 'md', outputfile=md_output)
+    except Exception as error:
+        print(f"[错误] 转换{docx_input}失败! 原因: {error}")
+        exit()
     with open(md_output, 'r', encoding='utf-8') as load_md_file:
         md_content = load_md_file.read()
     return md_content
@@ -59,13 +60,15 @@ prompt = f'''
 
 以上是参考文件，请仔细阅读。
 '''
+
+# 模型设置
 model = genai.GenerativeModel(
     model_name="gemini-1.5-pro",  # 模型名称, 可替换为gemini-1.5-flash, gemini-1.5-pro-exp-0827等
     generation_config=generation_config_dict,  # 导入生成CFG字典
     system_instruction=prompt,  # Prompt 设置
 )
 
-# LLM部分
+# 输入端
 user_input = f'''
 接下来，你需要根据我提供的"企业信息"，并参考"你刚刚阅读的报告文件的内容"，填充"固定贷款调查报告模板"，以生成一份"该企业的固定资产贷款调查报告"。
 
@@ -80,13 +83,14 @@ user_input = f'''
 ---文件尾分隔符---
 
 以上是工作需要用到的材料文件，请开始你的工作。注意，你只需要输出markdown格式的报告内容，不需要输出文件头和文件尾以及其他说明信息和语句。
-'''  # 输入端
+'''
 
 chat_history = []
 chat_session = model.start_chat(history=chat_history)
 
+# 输出端
 response = chat_session.send_message(user_input)
-print(f"Gemini > {response.text}")  # 输出端
+print(f"Gemini > {response.text}")
 
 chat_history.append({"role": "user", "parts": [user_input]})
 chat_history.append({f"role": "model", "parts": [response.text]})
