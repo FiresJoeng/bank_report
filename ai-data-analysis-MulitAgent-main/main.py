@@ -3,8 +3,6 @@ import os
 from logger import setup_logger
 import google.generativeai as genai
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langgraph.graph import StateGraph
-from IPython.display import Markdown
 from load_cfg import GOOGLE_API_KEY, LANGCHAIN_API_KEY, WORKING_DIRECTORY
 
 # Env 配置
@@ -61,6 +59,6 @@ if not os.path.exists(WORKING_DIRECTORY):
 logger.info("程序初始化完毕.")
 
 # 测试
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-pro')
 response = model.generate_content(prompt)
 print(str(response))

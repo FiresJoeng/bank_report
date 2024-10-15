@@ -3,3 +3,12 @@
 __root__
   Did not find google_api_key, please add an environment variable `GOOGLE_API_KEY` which contains it, or pass `google_api_key` as a named parameter. (type=value_error)
 2024-10-14 00:34:04,763 - logger - ERROR - LLM初始化过程中发生了一个错误: 'model'
+2024-10-14 22:05:15,418 - logger - INFO - LLM初始化完毕.
+2024-10-14 22:05:15,421 - logger - INFO - 工作目录已创建: ./data_storage/
+2024-10-14 22:05:15,421 - logger - INFO - 程序初始化完毕.
+2024-10-14 22:08:46,202 - logger - INFO - LLM初始化完毕.
+2024-10-14 22:08:46,202 - logger - INFO - 程序初始化完毕.
+2024-10-14 22:24:03,637 - logger - INFO - LLM初始化完毕.
+2024-10-14 22:24:03,638 - logger - INFO - 程序初始化完毕.
+2024-10-14 22:25:13,893 - logger - INFO - LLM初始化完毕.
+2024-10-14 22:25:13,894 - logger - INFO - 程序初始化完毕.
