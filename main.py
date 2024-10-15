@@ -2,6 +2,7 @@
 
 import os
 import google.generativeai as genai
+import pypandoc
 import docx_to_md
 
 # API 设置
@@ -24,27 +25,28 @@ generation_config_dict = {
 
 # 函数: 转换docx文件为md文件
 def load_file(docx_input, md_output):
-    docx_to_md.convert(docx_input, md_output)
+    pypandoc.convert_file(docx_input, 'md', outputfile=md_output)
     with open(md_output, 'r', encoding='utf-8') as load_md_file:
         md_content = load_md_file.read()
     return md_content
 
 
-# 预设提示词和模型
-
 # report_template
 docx_path = "./docx_files/仅页1_固定资产贷款调查报告模板.docx"
 md_path = "./md_files/仅页1_固定资产贷款调查报告模板.md"
 report_template = load_file(docx_path, md_path)
+
 # reference_report
 docx_path = "./docx_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.docx"
 md_path = "./md_files/仅页1_晶正鑫：固定资产贷款调查报告20220512.md"
 reference_report = load_file(docx_path, md_path)
+
 # enterprise_info
 docx_path = "./docx_files/广东省电子信息产业集团有限公司-企业基础信用报告-20241015155110.docx"
 md_path = "./md_files/广东省电子信息产业集团有限公司-企业基础信用报告-20241015155110.md"
 enterprise_info = load_file(docx_path, md_path)
 
+# prompt
 prompt = f'''
 你是广州银行的一名资深分析师，主要职责是评估企业或个人的信用风险，分析借款人的财务状况，并根据评估结果撰写贷款调查报告，以供银行管理层或风险控制部门决策。
 你具备一流的财务分析能力和风险管理能力，拥有多年的工作经验和丰富的专业技能。
@@ -62,7 +64,6 @@ model = genai.GenerativeModel(
     generation_config=generation_config_dict,  # 导入生成CFG字典
     system_instruction=prompt,  # Prompt 设置
 )
-
 
 # LLM部分
 user_input = f'''
