@@ -16,6 +16,9 @@ os.environ["LANGCHAIN_API_KEY"] = LANGCHAIN_API_KEY
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = "Multi-Agent Data Analysis System"
 
+# logger 配置
+logger = setup_logger()
+
 # genai config 配置
 generation_config_dict = {
     "temperature": 1,  # 生成温度，值越高，对于同样的问题，给出不同回答的可能性越高
@@ -31,9 +34,6 @@ prompt = '''
 你具备一流的财务分析能力和风险管理能力，拥有多年的工作经验和丰富的专业技能。
 现在，你的任务是遍历数据mapping表的内容，生成中间表格。
 '''
-
-# logger 配置
-logger = setup_logger()
 
 # LLM 初始化配置
 try:
