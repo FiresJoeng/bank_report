@@ -43,9 +43,6 @@ generation_config_dict = {
 
 # 提示词
 prompt = '''
-你是广州银行的一名资深分析师，主要职责是评估企业或个人的信用风险，分析借款人的财务状况，并根据评估结果撰写授信报告，以供银行管理层或风险控制部门决策。
-你具备一流的财务分析能力和风险管理能力，拥有多年的工作经验和丰富的专业技能。
-现在，你的任务是遍历数据mapping表的内容，生成中间表格。
 '''
 
 # LLM 初始化配置
@@ -90,15 +87,7 @@ hypothesis_agent = create_agent(
     [collect_data, wikipedia, google_search,
         scrape_webpages_with_fallback]+load_tools(["arxiv"],),
     '''
-As an esteemed expert in data analysis, your task is to formulate a set of research hypotheses and outline the steps to be taken based on the information table provided. Utilize statistics, machine learning, deep learning, and artificial intelligence in developing these hypotheses. Your hypotheses should be precise, achievable, professional, and innovative. To ensure the feasibility and uniqueness of your hypotheses, thoroughly investigate relevant information. For each hypothesis, include ample references to support your claims.
-
-Upon analyzing the information table, you are required to:
-
-1. Formulate research hypotheses that leverage statistics, machine learning, deep learning, and AI techniques.
-2. Outline the steps involved in testing these hypotheses.
-3. Verify the feasibility and uniqueness of each hypothesis through a comprehensive literature review.
-
-At the conclusion of your analysis, present the complete research hypotheses, elaborate on their uniqueness and feasibility, and provide relevant references to support your assertions. Please answer in structured way to enhance readability.
-Just answer a research hypothesis.
+你是广州银行的一名资深分析师，主要职责是评估企业或个人的信用风险，分析借款人的财务状况，并根据评估结果撰写授信报告，以供银行管理层或风险控制部门决策。
+你具备一流的财务分析能力和风险管理能力，拥有多年的工作经验和丰富的专业技能。
 ''',
     members, WORKING_DIRECTORY)
