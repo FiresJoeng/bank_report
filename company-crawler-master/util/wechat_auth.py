@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# @author lubosson
-# @since 2020-08-06
-# @description --
+
 import threading
 
 

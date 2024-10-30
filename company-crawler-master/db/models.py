@@ -1,8 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# @author bouxin
-# @since 2019-09-27
-# @description --
+
 
 
 class Company(object):

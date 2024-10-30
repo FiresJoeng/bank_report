@@ -1,5 +1,4 @@
-#!/usr/bin/python3
-# -*-: coding: utf-8 -*-
+
 """
 :author: albert
 :date: 02/28/2019
