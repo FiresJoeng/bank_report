@@ -64,3 +64,6 @@
 ##### [Typora 破解版](https://github.com/markyin0707/typora-activation)
 ##### [Microsoft Visual Studio Code](https://code.visualstudio.com/)
 ##### [Cursor](https://www.cursor.com/)
+
+**工具**
+### [Clash](https://github.com/Z-Siqi/Clash-for-Windows_Chinese)
