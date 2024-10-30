@@ -1,0 +1,6 @@
+10/30/2024 22:12:53 httpclient.py[line:32] WARNING <Response [404]>
+10/30/2024 22:12:55 crawler.py[line:22] INFO 正在处理爬取[Google中国]
+10/30/2024 22:12:55 crawler.py[line:33] INFO completed
+10/30/2024 22:17:42 httpclient.py[line:32] WARNING <Response [404]>
+10/30/2024 22:17:44 crawler.py[line:22] INFO 正在处理爬取[Google中国]
+10/30/2024 22:17:44 crawler.py[line:33] INFO completed
