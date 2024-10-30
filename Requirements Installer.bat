@@ -1,0 +1,6 @@
+@echo off
+title Requirements Installing...
+echo Installing...
+pip install -r requirements.txt
+echo Finished!
+exit
