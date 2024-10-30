@@ -48,20 +48,19 @@
 ### 参考资料:
 
 **爬虫程序**:
-##### 企查查爬虫:
-https://github.com/bouxin/company-crawler/tree/master?tab=readme-ov-file
-##### 浏览器Fake UA:
-https://github.com/fake-useragent/fake-useragent
-##### Firecrawl:
-https://github.com/mendableai/firecrawl
+##### [企查查天眼查爬虫](https://github.com/bouxin/company-crawler/tree/master?tab=readme-ov-file)
+##### [伪造浏览器用户代理](https://github.com/fake-useragent/fake-useragent)
+##### [Firecrawl](https://github.com/mendableai/firecrawl)
+
 
 **LLM相关**:
-##### MultiAgent:
-https://github.com/starpig1129/ai-data-analysis-MulitAgent
-##### Paper QA:
-https://github.com/Future-House/paper-qa
-##### Storm:
-https://github.com/stanford-oval/storm
-##### Gemini 配置教程:
-https://github.com/FiresJoeng/py_genai_tutorial
+##### [MultiAgent](https://github.com/starpig1129/ai-data-analysis-MulitAgent)
+##### [Paper QA](https://github.com/Future-House/paper-qa)
+##### [Storm](https://github.com/stanford-oval/storm)
+##### [Gemini 配置教程](https://github.com/FiresJoeng/py_genai_tutorial)
 
+
+**编辑器**:
+##### [Typora 破解版](https://github.com/markyin0707/typora-activation)
+##### [Microsoft Visual Studio Code](https://code.visualstudio.com/)
+##### [Cursor](https://www.cursor.com/)
