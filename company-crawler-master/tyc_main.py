@@ -3,7 +3,8 @@ from util import log
 import urllib3
 urllib3.disable_warnings()
 
-key = input("请输入要查询的公司名称：")
+
+key = input("键入要搜索的关键字 > ")
 log.set_file("./logs/tianyancha.log")
 
 
