@@ -29,6 +29,8 @@ from langchain.tools import tool
 from langgraph.checkpoint.memory import MemorySaver
 from IPython.display import Image, display
 from typing import Dict, Any
+from state_1 import NoteState 
+from langchain.output_parsers import PydanticOutputParser
 
 #加载 .env 文件
 load_dotenv()
@@ -249,6 +251,7 @@ def human_review_node(state: State) -> State:
         logger.error(f"An error occurred during human review: {str(e)}", exc_info=True)
         return None
     
+#从指定路径读取报告材料，处理这些材料并与代理交互
 def refiner_node(state: State, agent: AgentExecutor, name: str) -> State:
     """
     Read MD file contents and PNG file names from the specified storage path,
@@ -380,7 +383,7 @@ def create_agent(
         f"You are chosen for a reason! You are one of the following team members: {team_members_str}.\n"
         f"The initial contents of your working directory are:\n{initial_directory_contents}\n"
         "Use the ListDirectoryContents tool to check for updates in the directory contents when needed."
-    )
+    )#工具可能需要填入 unfinished
 
     # Define the prompt structure with placeholders for dynamic content
     prompt = ChatPromptTemplate.from_messages([
@@ -406,70 +409,6 @@ def create_agent(
     # Return an executor to manage the agent's task execution
     return AgentExecutor.from_agent_and_tools(agent=agent, tools=tools, verbose=False)
 
-
-
-def structured_output_parser(output: str) -> Dict[str, Any]:
-    try:
-        return json.loads(output)
-    except json.JSONDecodeError:
-        # 如果不是有效的 JSON，尝试解析为键值对
-        result = {}
-        for line in output.split('\n'):
-            if ':' in line:
-                key, value = line.split(':', 1)
-                result[key.strip()] = value.strip()
-        return result
-
-def create_supervisor(llm: genai.GenerativeModel, system_prompt: str, members: list[str]):
-    logger.info("Creating supervisor")
-    options = ["FINISH"] + members
-    
-    prompt_template = f"""
-    {system_prompt}
-
-    Given the conversation above, who should act next? Or should we FINISH? 
-    Select one of: {options}. 
-    Additionally, specify the task that the selected role should perform.
-
-    Please format your response as a JSON object with the following structure:
-    {{
-        "next": "The next role to act",
-        "task": "The task to be performed"
-    }}
-
-    Current conversation:
-    {{messages}}
-    """
-
-    def supervisor_chain(state: Dict[str, Any]) -> Dict[str, Any]:
-        messages = state.get("messages", [])
-        formatted_messages = "\n".join([f"{m.type}: {m.content}" for m in messages])
-        
-        prompt = prompt_template.format(messages=formatted_messages)
-        
-        response = llm.generate_content(prompt)
-        
-        try:
-            result = json.loads(response.text)
-            return {
-                "next": result["next"],
-                "task": result["task"]
-            }
-        except json.JSONDecodeError:
-            logger.error(f"Failed to parse JSON from model output: {response.text}")
-            return {
-                "next": "ERROR",
-                "task": "Error occurred in supervisor. Please check the logs."
-            }
-
-    logger.info("Supervisor created successfully")
-    return supervisor_chain
-
-
-#state读不到notestate 所以创了一个功能类似的py文件
-#已经放在create_agent.py里 可以删
-from state_1 import NoteState 
-from langchain.output_parsers import PydanticOutputParser
 
 def create_note_agent(
     llm: ChatGoogleGenerativeAI,
@@ -499,6 +438,94 @@ def create_note_agent(
 
 logger.info("Agent creation module initialized")
 #到这里
+
+#
+def structured_output_parser(output: str) -> Dict[str, Any]:
+    """
+    解析结构化输出，将字符串转换为字典。
+    
+    参数:
+        output (str): 输入的字符串，可能是有效的 JSON 格式或键值对格式。
+    
+    返回:
+        Dict[str, Any]: 解析后的字典。
+    """
+    try:
+        return json.loads(output)  # 尝试将输出解析为 JSON
+    except json.JSONDecodeError:
+        # 如果不是有效的 JSON，尝试解析为键值对
+        result = {}
+        for line in output.split('\n'):
+            if ':' in line:  # 检查每一行是否包含冒号
+                key, value = line.split(':', 1)  # 分割键和值
+                result[key.strip()] = value.strip()  # 去除多余空格并存入结果字典
+        return result
+
+def create_supervisor(llm: genai.GenerativeModel, system_prompt: str, members: list[str]):
+    """
+    创建一个监督者，负责协调和管理任务。
+    
+    参数:
+        llm (genai.GenerativeModel): 用于生成内容的语言模型。
+        system_prompt (str): 定义监督者角色和任务的系统提示。
+        members (list[str]): 团队成员的角色列表。
+    
+    返回:
+        supervisor_chain: 处理状态并返回下一个角色和任务的函数。
+    """
+    logger.info("Creating supervisor")  # 记录创建监督者的日志
+    options = ["FINISH"] + members  # 选项包括完成和团队成员
+    
+    prompt_template = f"""
+    {system_prompt}
+
+    Given the conversation above, who should act next? Or should we FINISH? 
+    Select one of: {options}. 
+    Additionally, specify the task that the selected role should perform.
+
+    Please format your response as a JSON object with the following structure:
+    {{
+        "next": "The next role to act",
+        "task": "The task to be performed"
+    }}
+
+    Current conversation:
+    {{messages}}
+    """  # 创建提示模板
+
+    def supervisor_chain(state: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        处理状态并返回下一个角色和任务。
+        
+        参数:
+            state (Dict[str, Any]): 当前状态字典。
+        
+        返回:
+            Dict[str, Any]: 包含下一个角色和任务的字典。
+        """
+        messages = state.get("messages", [])  # 获取当前消息
+        formatted_messages = "\n".join([f"{m.type}: {m.content}" for m in messages])  # 格式化消息
+        
+        prompt = prompt_template.format(messages=formatted_messages)  # 填充提示模板
+        
+        response = llm.generate_content(prompt)  # 生成内容
+        
+        try:
+            result = json.loads(response.text)  # 尝试将响应解析为 JSON
+            return {
+                "next": result["next"],  # 返回下一个角色
+                "task": result["task"]    # 返回任务
+            }
+        except json.JSONDecodeError:
+            logger.error(f"Failed to parse JSON from model output: {response.text}")  # 记录解析错误
+            return {
+                "next": "ERROR",  # 返回错误状态
+                "task": "Error occurred in supervisor. Please check the logs."  # 返回错误信息
+            }
+
+    logger.info("Supervisor created successfully")  # 记录成功创建监督者的日志
+    return supervisor_chain  # 返回处理状态的函数
+
 
 #router.py读不了 直接搞进来
 import urllib
@@ -910,7 +937,7 @@ try:
         generation_config={
             **generation_config_dictllm,
             "temperature": 0.0,
-            "max_output_tokens": 4096  # 相当于 max_tokens
+            "max_output_tokens": 4096  # 相���于 max_tokens
         }
     )
 
@@ -943,7 +970,7 @@ hypothesis_agent = create_agent(
     llm, 
     [collect_data, wikipedia, google_search, scrape_webpages_with_fallback] + load_tools(["arxiv"]),
     '''
-    ��为数据分析领域的专家，您的任务是根据提供的信息表制定一系列研究假设，并概述基于这些假设的步骤。利用统计学、机器学习、深度学习和人工智能来制定这些假设。您的假设应当准确、可实现、专业且具有创新性。为了确保假设的可行性和独特性，请彻底调查相关信息。对于每个假设，请提供充分的参考资料以支持您的主张。
+    为数据分析领域的专家，您的任务是根据提供的信息表制定一系列研究假设，并概述基于这些假设的步骤。利用统计学、机器学习、深度学习和人工智能来制定这些假设。您的假设应当准确、可实现、专业且具有创新性。为了确保假设的可行性和独特性，请彻底调查相关信息。对于每个假设，请提供充分的参考资料以支持您的主张。
 
     在分析信息表后，您需要：
 
@@ -961,7 +988,7 @@ hypothesis_agent = create_agent(
 process_agent = create_supervisor(
     llm,  
     """
-    您是负责监督和协调全面数据分析项目的研究主管，最终目标是生成完整且连贯���研究报告。您的主要任务包括：
+    您是负责监督和协调全面数据分析项目的研究主管，最终目标是生成完整且连贯的研究报告。您的主要任务包括：
 
     1. 验证和完善研究假设，以确保其清晰、具体且可测试。
     2. 组织全面的数据分析过程，确保所有代码都有良好的文档记录且可重复。
@@ -1130,7 +1157,7 @@ refiner_agent = create_agent(
     您是一位专家AI报告优化师，负责优化和增强研究报告。您的职责包括：
 
     1. 彻底审查整个研究报告，关注内容、结构和可读性。
-    2. 确定并强调关键发现、见解和结论。
+    2. 确定并���调关键发现、见解和结论。
     3. 重新结构化报告，以改善清晰度、连贯性和逻辑流。
     4. 确保所有部分良好整合，并支持主要研究假设。
     5. 精简冗余或重复的内容，同时保留重要细节。
