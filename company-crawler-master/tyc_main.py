@@ -5,7 +5,7 @@ urllib3.disable_warnings()
 
 
 key = input("键入要搜索的关键字 > ")
-log.set_file("./logs/tyc.log")
+log.set_file(f'./logs/"{key}"的天眼查搜索结果.log')
 
 
 if __name__ == '__main__':
@@ -13,4 +13,4 @@ if __name__ == '__main__':
     crawler.load_keys(keys)
     crawler.start()
     client = crawler.TycClient() 
-    client.save_to_csv('./logs/company_data.csv') 
+    client.save_to_csv(f'./csv_files/"{key}"的天眼查搜索结果.csv') 
