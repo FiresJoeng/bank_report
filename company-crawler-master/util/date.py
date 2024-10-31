@@ -1,9 +1,3 @@
-
-"""
-:author: lubosson
-:date: 2019-04-11
-:desc:
-"""
 import datetime
 
 
@@ -15,8 +9,3 @@ def datetime2timestamp(pytime: datetime.datetime.now()):
 def timestamp2datetime(timestamp: int):
     date = datetime.datetime.fromtimestamp(timestamp / 1000)
     return date
-
-
-
-
-

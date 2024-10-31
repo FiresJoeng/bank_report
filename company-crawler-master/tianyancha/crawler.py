@@ -1,15 +1,10 @@
-
-"""
-:author: albert
-:date: 03/08/2019
-"""
 import logging
 from tianyancha.client import TycClient
 from db.mysql_connector import *
 
 
 def start():
-    """ 入口函数 """
+    # 入口函数
     def __printall(items):
         for elem in items:
             logging.info(elem.__str__())
@@ -26,8 +21,3 @@ def start():
 
 def load_keys(keys: list):
     globals().setdefault('keywords', keys)
-
-
-
-
-

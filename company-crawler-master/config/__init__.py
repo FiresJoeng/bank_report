@@ -1,8 +1,3 @@
-
-"""
-:author: lubosin
-:date: 03/28/2019
-"""
 import logging as log
 import sys
 
@@ -37,5 +32,3 @@ class MysqlEnviron:
     @property
     def password(self):
         return self.CONFIG.get('password')
-
-

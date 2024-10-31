@@ -1,13 +1,5 @@
-
-"""
-:author: albert
-:date: 02/28/2019
-:desc: http请求工具类
-"""
 import logging
-
 import requests
-
 from config import GLOBAL_PROXY, PROXY_POOL_URL
 
 
@@ -25,7 +17,8 @@ class Request:
 
     def get(self, **kwargs):
         p = proxy() if GLOBAL_PROXY and self.proxy else None
-        resp = requests.get(self.url, params=self.params, verify=False, proxies=p, **kwargs)
+        resp = requests.get(self.url, params=self.params,
+                            verify=False, proxies=p, **kwargs)
         if resp and resp.status_code == 200:
             self.data = resp.text
         else:
@@ -53,4 +46,3 @@ def proxy():
 
 if __name__ == '__main__':
     print(proxy())
-    

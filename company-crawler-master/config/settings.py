@@ -1,17 +1,16 @@
-
 ENV = "dev"
 
 # 全局代理控制
 GLOBAL_PROXY = True
 PROXY_POOL_URL = "http://127.0.0.1:7890"
 
-""" mysql 配置 """
+# MySQL 配置
 MysqlConfig = {
     'dev': {
-        'host': '192.168.1.103',
+        'host': '',
         'port': 3306,
-        'db': 'enterprise',
-        'password': 'root@123'
+        'db': '',
+        'password': ''
     },
     'test': {
 
@@ -21,7 +20,3 @@ MysqlConfig = {
 
     }
 }
-
-
-
-

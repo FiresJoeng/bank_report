@@ -1,6 +1,3 @@
-
-
-
 class Company(object):
     def __init__(self):
         self.id = None
@@ -92,4 +89,3 @@ class City(object):
 
     def __str__(self) -> str:
         return ', '.join('%s: %s' % elem for elem in self.__dict__.items())
-

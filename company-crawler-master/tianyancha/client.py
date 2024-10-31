@@ -1,6 +1,6 @@
-
 import json
 import logging
+import csv
 
 from db.models import Company, CompanyShareholder, CompanyManager
 from tianyancha import *
@@ -17,11 +17,9 @@ class TycClient:
         self.companies = []
 
     def search(self, keyword: str):
-        """
-        根据关键字搜索相关企业信息
-        :param keyword: 关键字
-        :return:
-        """
+        # 根据关键字搜索相关企业信息
+        # :param keyword: 关键字
+        # :return:
         self.keyword = keyword
         if not self.payload:
             self.payload = {
@@ -35,7 +33,8 @@ class TycClient:
             api_data = json.loads(data)
             if api_data.get("state") == 'ok':
                 self.src = api_data.get("data", {}).get("companyList", [])
-                self.brand_and_agencies = api_data.get("data", {}).get("brandAndAgencyList", [])
+                self.brand_and_agencies = api_data.get(
+                    "data", {}).get("brandAndAgencyList", [])
                 self.__post_process__()
             else:
                 logging.info("查询异常：[%s]" % api_data)
@@ -57,19 +56,23 @@ class TycClient:
                 return company.get('id') == b_and_a.get('graphId')
 
             try:
-                # 公司主体融资阶段、竟品信息
-                brand_and_agency = filter(is_equal, self.brand_and_agencies).__next__()
-                self.EntityHelper.__another_info__(brand_and_agency, company_entity)
+                # 公司主体融资阶段、竞品信息
+                brand_and_agency = filter(
+                    is_equal, self.brand_and_agencies).__next__()
+                self.EntityHelper.__another_info__(
+                    brand_and_agency, company_entity)
             except:
-                logging.warning('竟品信息获取失败！')
+                logging.warning('竞品信息获取失败！')
                 pass
-            """ 公司详情 """
-            detail_resp = Request(TycPortraitApi.format(eid=company.get("id")), headers=REQUEST_HEADERS).data
+            # 公司详情
+            detail_resp = Request(TycPortraitApi.format(
+                eid=company.get("id")), headers=REQUEST_HEADERS).data
             if detail_resp:
                 company_portrait = json.loads(detail_resp)
                 # 公司详情补充信息
                 if company_portrait.get("state") == 'ok':
-                    self.EntityHelper.__additional__(company_portrait.get("data", {}), company_entity)
+                    self.EntityHelper.__additional__(
+                        company_portrait.get("data", {}), company_entity)
 
             shareholder_request_body = {
                 "graphId": company.get("id"),
@@ -82,13 +85,15 @@ class TycClient:
                     }
                 }
             }
-            """ 股东信息 """
-            shareholder_resp = Request(TycShareholderPostApi, method='post', json=shareholder_request_body, headers=REQUEST_HEADERS).data
+            # 股东信息
+            shareholder_resp = Request(TycShareholderPostApi, method='post',
+                                       json=shareholder_request_body, headers=REQUEST_HEADERS).data
             if shareholder_resp:
                 company_shareholder = json.loads(shareholder_resp)
                 # 公司详情补充信息
                 if company_shareholder.get("state") == 'ok':
-                    self.EntityHelper.__shareholder__(company_shareholder.get("data", {}).get("shareHolder", {}), company_entity)
+                    self.EntityHelper.__shareholder__(company_shareholder.get(
+                        "data", {}).get("shareHolder", {}), company_entity)
 
             manager_request_body = {
                 "graphId": company.get("id"),
@@ -101,14 +106,73 @@ class TycClient:
                     }
                 }
             }
-            """ 高管信息 """
-            manager_resp = Request(TycEnterpriseManagerPostApi, method='post', json=manager_request_body, headers=REQUEST_HEADERS).data
+            # 高管信息
+            manager_resp = Request(TycEnterpriseManagerPostApi, method='post',
+                                   json=manager_request_body, headers=REQUEST_HEADERS).data
             if manager_resp:
                 company_manager = json.loads(manager_resp)
                 # 公司详情补充信息
                 if company_manager.get("state") == 'ok':
-                    self.EntityHelper.__company_manager__(company_manager.get("data", {}).get("companyStaff", {}), company_entity)
+                    self.EntityHelper.__company_manager__(company_manager.get(
+                        "data", {}).get("companyStaff", {}), company_entity)
             self.companies.append(company_entity)
+    
+    def save_to_csv(self, filename: str):
+                # 保存公司信息到CSV文件
+        with open(filename, mode='w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = [
+                'id', 'name', 'short_name', 'representative', 'found_time',
+                'company_address', 'register_address', 'province', 'city',
+                'district', 'biz_status', 'geoloc', 'emails', 'phones',
+                'contact', 'biz_scope', 'company_type', 'score',
+                'register_capital', 'credit_code', 'taxpayer_code',
+                'register_code', 'organization_code', 'tags', 'industry',
+                'english_name', 'register_institute', 'websites',
+                'actual_capital', 'used_name', 'staffs', 'tax_address',
+                'taxpayer_bank', 'portraits', 'logo', 'company_desc'
+            ]
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for company in self.companies:
+                writer.writerow({
+                    'id': company.id,
+                    'name': company.name,
+                    'short_name': company.short_name,
+                    'representative': company.representative,
+                    'found_time': company.found_time,
+                    'company_address': company.company_address,
+                    'register_address': company.register_address,
+                    'province': company.province,
+                    'city': company.city,
+                    'district': company.district,
+                    'biz_status': company.biz_status,
+                    'geoloc': company.geoloc,
+                    'emails': ';'.join(company.emails),
+                    'phones': ';'.join(company.phones),
+                    'contact': company.contact,
+                    'biz_scope': company.biz_scope,
+                    'company_type': company.company_type,
+                    'score': company.score,
+                    'register_capital': company.register_capital,
+                    'credit_code': company.credit_code,
+                    'taxpayer_code': company.taxpayer_code,
+                    'register_code': company.register_code,
+                    'organization_code': company.organization_code,
+                    'tags': ';'.join(company.tags),
+                    'industry': company.industry,
+                    'english_name': company.english_name,
+                    'register_institute': company.register_institute,
+                    'websites': ';'.join(company.websites) if isinstance(company.websites, list) else company.websites,
+                    'actual_capital': company.actual_capital,
+                    'used_name': company.used_name,
+                    'staffs': company.staffs,
+                    'tax_address': company.tax_address,
+                    'taxpayer_bank': company.taxpayer_bank,
+                    'portraits': ';'.join(company.portraits),
+                    'logo': company.logo,
+                    'company_desc': company.company_desc
+                })
+        
 
     class EntityHelper:
         @staticmethod
@@ -116,7 +180,8 @@ class TycClient:
             # 公司外部系统ID
             target.id = src.get('id', '-')
             # 公司名称
-            target.name = src.get('name', '-').replace('<em>', '').replace('</em>', '')
+            target.name = src.get(
+                'name', '-').replace('<em>', '').replace('</em>', '')
             # 公司简称
             target.short_name = src.get('alias', '-')
             # 公司法人
@@ -141,7 +206,8 @@ class TycClient:
                 'longitude': src.get('longitude', '-')
             })
             # 公司邮箱列表
-            target.emails = src.get('emails', ['-']).split(';')[0].replace('\t', '')
+            target.emails = src.get(
+                'emails', ['-']).split(';')[0].replace('\t', '')
             # 公司联系方式列表
             target.phones = src.get('phoneList', [])
             # 公司联系方式
@@ -149,7 +215,8 @@ class TycClient:
             # 公司经营范围
             target.biz_scope = src.get('businessScope', '-')
             # 公司类型
-            target.company_type = src.get('companyOrgType', '-').replace('\t', '')
+            target.company_type = src.get(
+                'companyOrgType', '-').replace('\t', '')
             # 公司质量分数
             target.score = src.get('orginalScore', 0)
             # 公司注册资本
@@ -173,7 +240,7 @@ class TycClient:
         def __another_info__(brand_and_agency: dict, company: Company):
             # 公司融资轮次
             company.financing_round = brand_and_agency.get("round", "未知")
-            # 公司竟品信息
+            # 公司竞品
             company.competitions = brand_and_agency.get("jingpinName", [])
             # 公司logo
             company.logo = brand_and_agency.get("logo")
@@ -221,7 +288,8 @@ class TycClient:
                     shareholder.alias = holder.get("alias")
                     shareholder.avatar = holder.get("logo")
                     shareholder.control_ratio = holder.get("proportion")
-                    shareholder.tags = [tag.get("name") for tag in holder.get("tagList", [])]
+                    shareholder.tags = [tag.get("name")
+                                        for tag in holder.get("tagList", [])]
                     company.shareholders.append(shareholder)
 
         @staticmethod
@@ -234,4 +302,3 @@ class TycClient:
                 company_manager.name = manager.get("name", "-")
                 company_manager.titles = manager.get("typeJoin", [])
                 company.managers.append(company_manager)
-

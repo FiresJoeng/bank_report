@@ -1,5 +1,3 @@
-
-
 import logging
 
 from uplink import *
@@ -10,18 +8,14 @@ X_AUTH_TOKEN = "eyJkaXN0aW5jdF9pZCI6IjE3ZDFjNWVhMzZjNGY2LTA5ZjU2NWUwNWViNTZjLTFj
 
 
 def _response_handler(resp):
-    """
-    API接口响应参数处理器
-    :return:
-    """
+    # API接口响应参数处理器
+    # :return:
     pass
 
 
 def _error_handler(exc_type, exc_val, exc_tb):
-    """
-    API错误响应处理器
-    :return:
-    """
+    # API错误响应处理器
+    # :return:
     logging.info('type: ' + exc_type)
     logging.info('val: ' + exc_val)
     logging.info('tb: ' + exc_tb)
@@ -37,43 +31,11 @@ def _error_handler(exc_type, exc_val, exc_tb):
     'x-auth-token': X_AUTH_TOKEN,
 })
 class TianyanchaBasicInfo(Consumer):
-    """
-    企业基本数据
-    """
+    # 企业基本数据
     def __init__(self, base_url="", client=None, converters=(), auth=None, hooks=(), **kwargs):
         if not base_url:
             base_url = "https://api9.tianyancha.com"
         super().__init__(base_url, client, converters, auth, hooks, **kwargs)
-
-    @returns.json
-    @get("/services/v3/search/sNorV3/{q}")
-    def list_by_page(self, keyword: Path("q"), page_num: Query("pageNum"), page_size: Query("pageSize"), sort_type: Query("sortType")):
-        """
-        根据关键字查询企业信息分页列表
-        :param keyword:
-        :param page_num:
-        :param page_size:
-        :param sort_type:
-        :return:
-        """
-
-    @returns.json
-    @get("/services/v3/t/common/baseinfoV5/{enterpriseId}")
-    def get_enterprise_detail(self, enterprise_id: Path("enterpriseId")):
-        """
-        查询企业信息详情
-        :param enterprise_id:
-        :return:
-        """
-
-    @returns.json
-    @get("/services/v3/risk/companyRiskInfoV4")
-    def get_enterprise_business_risk(self, enterprise_id: Query("id")):
-        """
-        查询企业经营风险信息
-        :param enterprise_id:
-        :return:
-        """
 
 
 @error_handler(_error_handler)
@@ -89,6 +51,7 @@ class TianyanchaDimensional(Consumer):
     """
     企业维度数据
     """
+
     def __init__(self, base_url="", client=None, converters=(), auth=None, hooks=(), **kwargs):
         if not base_url:
             base_url = "https://capi.tianyancha.com"

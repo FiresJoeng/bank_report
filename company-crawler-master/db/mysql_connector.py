@@ -1,10 +1,3 @@
-
-"""
-:author: albert
-:date: 03/07/2019
-"""
-
-
 from dbutils.pooled_db import PooledDB
 from config import MysqlEnviron
 import logging as log
@@ -84,4 +77,3 @@ def write(sql: str, data: any):
         raise error
 
     return result
-
