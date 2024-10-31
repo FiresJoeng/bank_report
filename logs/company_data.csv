@@ -1,1 +1,1 @@
-公司名称,公司简称,法人,成立时间,地址,注册资本,行业
+id,name,short_name,representative,found_time,company_address,register_address,province,city,district,biz_status,geoloc,emails,phones,contact,biz_scope,company_type,score,register_capital,credit_code,taxpayer_code,register_code,organization_code,tags,industry,english_name,register_institute,websites,actual_capital,used_name,staffs,tax_address,taxpayer_bank,portraits,logo,company_desc
