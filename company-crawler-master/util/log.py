@@ -3,6 +3,16 @@ import os
 from logging.handlers import TimedRotatingFileHandler
 
 
+class UTF8TimedRotatingFileHandler(TimedRotatingFileHandler):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.stream = self._open()
+
+    def _open(self):
+        # 以 UTF-8 编码打开文件
+        return open(self.baseFilename, self.mode, encoding='utf-8')
+
+
 def set_file(filename):
     """
     设置日志文件并配置日志记录器。
@@ -21,7 +31,7 @@ def set_file(filename):
     # 获取当前工作目录
     os.getcwd()
     # 创建一个按天滚动的文件日志处理器
-    handler = TimedRotatingFileHandler(filename, 'D', 1, 7)
+    handler = UTF8TimedRotatingFileHandler(filename, 'D', 1, 7)
     # 设置日志格式化字符串
     fmt = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
     formatter = logging.Formatter(fmt=fmt, datefmt='%m/%d/%Y %H:%M:%S')

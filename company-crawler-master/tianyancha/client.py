@@ -1,5 +1,6 @@
 import json
 import logging
+import csv
 
 from db.models import Company, CompanyShareholder, CompanyManager
 from tianyancha import *
@@ -115,6 +116,10 @@ class TycClient:
                     self.EntityHelper.__company_manager__(company_manager.get(
                         "data", {}).get("companyStaff", {}), company_entity)
             self.companies.append(company_entity)
+    
+    def save_to_csv(self, filename: str):
+        # 保存公司信息到CSV文件
+        pass
 
     class EntityHelper:
         @staticmethod
