@@ -118,60 +118,7 @@ class TycClient:
             self.companies.append(company_entity)
     
     def save_to_csv(self, filename: str):
-                # 保存公司信息到CSV文件
-        with open(filename, mode='w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = [
-                'id', 'name', 'short_name', 'representative', 'found_time',
-                'company_address', 'register_address', 'province', 'city',
-                'district', 'biz_status', 'geoloc', 'emails', 'phones',
-                'contact', 'biz_scope', 'company_type', 'score',
-                'register_capital', 'credit_code', 'taxpayer_code',
-                'register_code', 'organization_code', 'tags', 'industry',
-                'english_name', 'register_institute', 'websites',
-                'actual_capital', 'used_name', 'staffs', 'tax_address',
-                'taxpayer_bank', 'portraits', 'logo', 'company_desc'
-            ]
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            for company in self.companies:
-                writer.writerow({
-                    'id': company.id,
-                    'name': company.name,
-                    'short_name': company.short_name,
-                    'representative': company.representative,
-                    'found_time': company.found_time,
-                    'company_address': company.company_address,
-                    'register_address': company.register_address,
-                    'province': company.province,
-                    'city': company.city,
-                    'district': company.district,
-                    'biz_status': company.biz_status,
-                    'geoloc': company.geoloc,
-                    'emails': ';'.join(company.emails),
-                    'phones': ';'.join(company.phones),
-                    'contact': company.contact,
-                    'biz_scope': company.biz_scope,
-                    'company_type': company.company_type,
-                    'score': company.score,
-                    'register_capital': company.register_capital,
-                    'credit_code': company.credit_code,
-                    'taxpayer_code': company.taxpayer_code,
-                    'register_code': company.register_code,
-                    'organization_code': company.organization_code,
-                    'tags': ';'.join(company.tags),
-                    'industry': company.industry,
-                    'english_name': company.english_name,
-                    'register_institute': company.register_institute,
-                    'websites': ';'.join(company.websites) if isinstance(company.websites, list) else company.websites,
-                    'actual_capital': company.actual_capital,
-                    'used_name': company.used_name,
-                    'staffs': company.staffs,
-                    'tax_address': company.tax_address,
-                    'taxpayer_bank': company.taxpayer_bank,
-                    'portraits': ';'.join(company.portraits),
-                    'logo': company.logo,
-                    'company_desc': company.company_desc
-                })
+        pass
         
 
     class EntityHelper:
