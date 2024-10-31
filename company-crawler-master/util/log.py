@@ -1,9 +1,3 @@
-
-"""
-:author: lubosson
-:date: 2019-04-11
-:desc:
-"""
 import logging
 import os
 from logging.handlers import TimedRotatingFileHandler

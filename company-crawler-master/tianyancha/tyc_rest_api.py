@@ -1,5 +1,3 @@
-
-
 import logging
 
 from uplink import *
@@ -10,18 +8,14 @@ X_AUTH_TOKEN = "eyJkaXN0aW5jdF9pZCI6IjE3ZDFjNWVhMzZjNGY2LTA5ZjU2NWUwNWViNTZjLTFj
 
 
 def _response_handler(resp):
-    """
-    API接口响应参数处理器
-    :return:
-    """
+    # API接口响应参数处理器
+    # :return:
     pass
 
 
 def _error_handler(exc_type, exc_val, exc_tb):
-    """
-    API错误响应处理器
-    :return:
-    """
+    # API错误响应处理器
+    # :return:
     logging.info('type: ' + exc_type)
     logging.info('val: ' + exc_val)
     logging.info('tb: ' + exc_tb)
@@ -37,9 +31,7 @@ def _error_handler(exc_type, exc_val, exc_tb):
     'x-auth-token': X_AUTH_TOKEN,
 })
 class TianyanchaBasicInfo(Consumer):
-    """
-    企业基本数据
-    """
+    # 企业基本数据
     def __init__(self, base_url="", client=None, converters=(), auth=None, hooks=(), **kwargs):
         if not base_url:
             base_url = "https://api9.tianyancha.com"
@@ -89,6 +81,7 @@ class TianyanchaDimensional(Consumer):
     """
     企业维度数据
     """
+
     def __init__(self, base_url="", client=None, converters=(), auth=None, hooks=(), **kwargs):
         if not base_url:
             base_url = "https://capi.tianyancha.com"
