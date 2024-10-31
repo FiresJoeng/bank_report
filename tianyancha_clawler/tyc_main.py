@@ -1,9 +1,13 @@
 import os
 import urllib3
 import logging
-from tianyancha.client import TycClient
+from tianyancha_client import TycClient
 from db.mysql_connector import *
 from logging.handlers import TimedRotatingFileHandler
+
+urllib3.disable_warnings()
+
+key = input("键入要搜索的关键字 > ")
 
 
 class UTF8TimedRotatingFileHandler(TimedRotatingFileHandler):
@@ -48,7 +52,7 @@ def crawler_start():
 
     keys = globals().get('keywords', [])
     for key in keys:
-        logging.info('正在采集[%s]...' % key)
+        logging.info(f'[提示] 正在抓取关于“{key}”的结果...')
         companies = TycClient().search(key).companies
         # 写入db
         # insert_company(companies)
@@ -59,12 +63,7 @@ def crawler_start():
 def crawler_load_keys(keys: list):
     globals().setdefault('keywords', keys)
 
-
-urllib3.disable_warnings()
-
-key = input("键入要搜索的关键字 > ")
 save_log(f'./logs/“{key}”的天眼查搜索结果.log')
-
 
 if __name__ == '__main__':
     keys = [key]

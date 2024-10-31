@@ -61,8 +61,8 @@ class TycClient:
                     is_equal, self.brand_and_agencies).__next__()
                 self.EntityHelper.__another_info__(
                     brand_and_agency, company_entity)
-            except:
-                logging.warning('竞品信息获取失败！')
+            except Exception as e:
+                logging.warning(f'[警告] 竞品信息获取异常！{e}')
                 pass
             # 公司详情
             detail_resp = Request(TycPortraitApi.format(
@@ -116,10 +116,9 @@ class TycClient:
                     self.EntityHelper.__company_manager__(company_manager.get(
                         "data", {}).get("companyStaff", {}), company_entity)
             self.companies.append(company_entity)
-    
+
     def save_to_csv(self, filename: str):
         pass
-        
 
     class EntityHelper:
         @staticmethod
