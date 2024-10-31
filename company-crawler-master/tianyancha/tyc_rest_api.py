@@ -37,36 +37,6 @@ class TianyanchaBasicInfo(Consumer):
             base_url = "https://api9.tianyancha.com"
         super().__init__(base_url, client, converters, auth, hooks, **kwargs)
 
-    @returns.json
-    @get("/services/v3/search/sNorV3/{q}")
-    def list_by_page(self, keyword: Path("q"), page_num: Query("pageNum"), page_size: Query("pageSize"), sort_type: Query("sortType")):
-        """
-        根据关键字查询企业信息分页列表
-        :param keyword:
-        :param page_num:
-        :param page_size:
-        :param sort_type:
-        :return:
-        """
-
-    @returns.json
-    @get("/services/v3/t/common/baseinfoV5/{enterpriseId}")
-    def get_enterprise_detail(self, enterprise_id: Path("enterpriseId")):
-        """
-        查询企业信息详情
-        :param enterprise_id:
-        :return:
-        """
-
-    @returns.json
-    @get("/services/v3/risk/companyRiskInfoV4")
-    def get_enterprise_business_risk(self, enterprise_id: Query("id")):
-        """
-        查询企业经营风险信息
-        :param enterprise_id:
-        :return:
-        """
-
 
 @error_handler(_error_handler)
 @response_handler(_response_handler)
