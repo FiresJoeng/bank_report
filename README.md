@@ -21,11 +21,7 @@
 
     (1) 模板填充模块 (银行报告初次生成)
     (2) 复查优化模块 (报告纠错、优化、加工)
-  3. 企业信息抓取，具体要获得哪些信息参考"md_files/mapping.md"
-
-    (1) 企查查、天眼查等网页爬虫
-    (2) def save_enterprise_info (函数: 保存抓取到的企业信息为csv/html/json/md等格式)
-    (3) def {file_extensions}_to_md (函数: 将企业信息转换为md文件)
+  ~~3. 企业信息抓取，具体要获得哪些信息参考"md_files/mapping.md"~~ *已完成*
   4. 生成的md报告转换为docx报告
   5. 优化工作
 
