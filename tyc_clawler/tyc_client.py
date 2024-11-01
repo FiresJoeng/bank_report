@@ -1,7 +1,6 @@
 import sys
 import json
 import logging
-import csv
 from models import Company  # , CompanyShareholder, CompanyManager
 from urllib.parse import quote
 from util.httpclient import Request
@@ -54,7 +53,7 @@ class TycClient:
                     "data", {}).get("brandAndAgencyList", [])
                 self.__post_process__()
             else:
-                logging.info("查询异常：[%s]" % api_data)
+                logging.info(f"查询异常：{api_data}")
         return self
 
     def __post_process__(self):
@@ -136,9 +135,6 @@ class TycClient:
 
             # 信息采集完毕，加入列表
             self.companies.append(company_entity)
-
-    def save_to_csv(self, filename: str):
-        pass
 
     class EntityHelper:
         @staticmethod
