@@ -2,7 +2,7 @@ import sys
 import json
 import logging
 import csv
-from models import Company, CompanyShareholder, CompanyManager
+from models import Company  # , CompanyShareholder, CompanyManager
 from urllib.parse import quote
 from util.httpclient import Request
 
@@ -89,47 +89,52 @@ class TycClient:
                     self.EntityHelper.__additional__(
                         company_portrait.get("data", {}), company_entity)
 
-            shareholder_request_body = {
-                "graphId": company.get("id"),
-                "hkVersion": 1,
-                "typeList": {
-                    "shareHolder": {
-                        "pageNum": 1,
-                        "pageSize": 20,
-                        "required": "true"
-                    }
-                }
-            }
-            # 股东信息
-            shareholder_resp = Request(TycShareholderPostApi, method='post',
-                                       json=shareholder_request_body, headers=REQUEST_HEADERS).data
-            if shareholder_resp:
-                company_shareholder = json.loads(shareholder_resp)
-                # 公司详情补充信息
-                if company_shareholder.get("state") == 'ok':
-                    self.EntityHelper.__shareholder__(company_shareholder.get(
-                        "data", {}).get("shareHolder", {}), company_entity)
+            # 以下功能待修复
 
-            manager_request_body = {
-                "graphId": company.get("id"),
-                "hkVersion": 1,
-                "typeList": {
-                    "companyStaff": {
-                        "pageNum": 1,
-                        "pageSize": 20,
-                        "required": "true"
-                    }
-                }
-            }
-            # 高管信息
-            manager_resp = Request(TycEnterpriseManagerPostApi, method='post',
-                                   json=manager_request_body, headers=REQUEST_HEADERS).data
-            if manager_resp:
-                company_manager = json.loads(manager_resp)
-                # 公司详情补充信息
-                if company_manager.get("state") == 'ok':
-                    self.EntityHelper.__company_manager__(company_manager.get(
-                        "data", {}).get("companyStaff", {}), company_entity)
+            # # 公司股东信息
+            # shareholder_request_body = {
+            #     "graphId": company.get("id"),
+            #     "hkVersion": 1,
+            #     "typeList": {
+            #         "shareHolder": {
+            #             "pageNum": 1,
+            #             "pageSize": 20,
+            #             "required": "true"
+            #         }
+            #     }
+            # }
+
+            # shareholder_resp = Request(TycShareholderPostApi, method='post',
+            #                            json=shareholder_request_body, headers=REQUEST_HEADERS).data
+            # if shareholder_resp:
+            #     company_shareholder = json.loads(shareholder_resp)
+            #     # 公司详情补充信息
+            #     if company_shareholder.get("state") == 'ok':
+            #         self.EntityHelper.__shareholder__(company_shareholder.get(
+            #             "data", {}).get("shareHolder", {}), company_entity)
+
+            # # 公司高管信息
+            # manager_request_body = {
+            #     "graphId": company.get("id"),
+            #     "hkVersion": 1,
+            #     "typeList": {
+            #         "companyStaff": {
+            #             "pageNum": 1,
+            #             "pageSize": 20,
+            #             "required": "true"
+            #         }
+            #     }
+            # }
+            # manager_resp = Request(TycEnterpriseManagerPostApi, method='post',
+            #                        json=manager_request_body, headers=REQUEST_HEADERS).data
+            # if manager_resp:
+            #     company_manager = json.loads(manager_resp)
+            #     # 公司详情补充信息
+            #     if company_manager.get("state") == 'ok':
+            #         self.EntityHelper.__company_manager__(company_manager.get(
+            #             "data", {}).get("companyStaff", {}), company_entity)
+
+            # 信息采集完毕，加入列表
             self.companies.append(company_entity)
 
     def save_to_csv(self, filename: str):
@@ -239,27 +244,29 @@ class TycClient:
             if not company.company_desc:
                 company.company_desc = src.get('baseInfo', '-')
 
-        @staticmethod
-        def __shareholder__(src: dict, company: Company):
-            holder_list = src.get("holderList", [])
-            for holder in holder_list:
-                if holder:
-                    shareholder = CompanyShareholder()
-                    shareholder.name = holder.get("name")
-                    shareholder.alias = holder.get("alias")
-                    shareholder.avatar = holder.get("logo")
-                    shareholder.control_ratio = holder.get("proportion")
-                    shareholder.tags = [tag.get("name")
-                                        for tag in holder.get("tagList", [])]
-                    company.shareholders.append(shareholder)
+        # 以下函数待修复
 
-        @staticmethod
-        def __company_manager__(src: dict, company: Company):
-            manager_list = src.get("result", [])
-            manager_type = src.get("staffTitle", "-")
-            for manager in manager_list:
-                company_manager = CompanyManager()
-                company_manager.manager_type = manager_type
-                company_manager.name = manager.get("name", "-")
-                company_manager.titles = manager.get("typeJoin", [])
-                company.managers.append(company_manager)
+        # @staticmethod
+        # def __shareholder__(src: dict, company: Company):
+        #     holder_list = src.get("holderList", [])
+        #     for holder in holder_list:
+        #         if holder:
+        #             shareholder = CompanyShareholder()
+        #             shareholder.name = holder.get("name")
+        #             shareholder.alias = holder.get("alias")
+        #             shareholder.avatar = holder.get("logo")
+        #             shareholder.control_ratio = holder.get("proportion")
+        #             shareholder.tags = [tag.get("name")
+        #                                 for tag in holder.get("tagList", [])]
+        #             company.shareholders.append(shareholder)
+
+        # @staticmethod
+        # def __company_manager__(src: dict, company: Company):
+        #     manager_list = src.get("result", [])
+        #     manager_type = src.get("staffTitle", "-")
+        #     for manager in manager_list:
+        #         company_manager = CompanyManager()
+        #         company_manager.manager_type = manager_type
+        #         company_manager.name = manager.get("name", "-")
+        #         company_manager.titles = manager.get("typeJoin", [])
+        #         company.managers.append(company_manager)

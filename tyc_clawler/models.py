@@ -47,26 +47,29 @@ class Company(object):
         return ', '.join('%s: %s' % elem for elem in self.__dict__.items())
 
 
-class CompanyShareholder(object):
-    def __init__(self):
-        self.name = None
-        self.alias = None
-        self.avatar = None
-        self.control_ratio = None
-        self.tags = []
-
-    def __str__(self) -> str:
-        return ', '.join('%s: %s' % elem for elem in self.__dict__.items())
+# 以下类待修复
 
 
-class CompanyManager(object):
-    def __init__(self):
-        self.name = None
-        self.titles = []
-        self.manager_type = None
+# class CompanyShareholder(object):
+#     def __init__(self):
+#         self.name = None
+#         self.alias = None
+#         self.avatar = None
+#         self.control_ratio = None
+#         self.tags = []
 
-    def __str__(self) -> str:
-        return ', '.join('%s: %s' % elem for elem in self.__dict__.items())
+#     def __str__(self) -> str:
+#         return ', '.join('%s: %s' % elem for elem in self.__dict__.items())
+
+
+# class CompanyManager(object):
+#     def __init__(self):
+#         self.name = None
+#         self.titles = []
+#         self.manager_type = None
+
+#     def __str__(self) -> str:
+#         return ', '.join('%s: %s' % elem for elem in self.__dict__.items())
 
 
 class Province(object):
