@@ -1,6 +1,6 @@
 import logging
 import requests
-from config import GLOBAL_PROXY, PROXY_POOL_URL
+from config.settings import GLOBAL_PROXY, PROXY_POOL_URL
 
 
 class Request:
