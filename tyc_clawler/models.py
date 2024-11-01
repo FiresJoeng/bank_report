@@ -40,15 +40,17 @@ class Company(object):
         self.tax_address = None
         self.taxpayer_bank = None
         self.portraits = None
-        self.shareholders = []
-        self.managers = []
+
+        # 以下项目待修复
+
+        # self.shareholders = []
+        # self.managers = []
 
     def __str__(self) -> str:
         return ', '.join('%s: %s' % elem for elem in self.__dict__.items())
 
 
 # 以下类待修复
-
 
 # class CompanyShareholder(object):
 #     def __init__(self):
