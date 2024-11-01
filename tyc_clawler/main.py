@@ -49,7 +49,7 @@ def crawler_start():
     # 打印所有结果到日志，并将结果保存到 CSV 文件中
     def __printall(items):
         # 打开 CSV 文件以写入
-        with open(f'./csv_files/“{key}”的天眼查搜索结果.csv', mode='w', encoding='utf-8', newline='') as csvfile:
+        with open(f'./csv_files/“{key}”的天眼查搜索结果.csv', mode='w', encoding='utf-8-sig', newline='') as csvfile:
             fieldnames = ['id', 'name', 'short_name', 'representative', 'found_time', 'company_address',
                           'register_address', 'province', 'city', 'district', 'biz_status', 'geoloc',
                           'emails', 'phones', 'contact', 'biz_scope', 'company_type', 'score',
