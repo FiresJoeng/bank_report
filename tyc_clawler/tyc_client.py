@@ -71,7 +71,6 @@ class TycClient:
 
             def is_equal(b_and_a):
                 return company.get('id') == b_and_a.get('graphId')
-
             try:
                 # 公司主体融资阶段、竞品信息
                 brand_and_agency = filter(
@@ -79,7 +78,6 @@ class TycClient:
                 self.EntityHelper.__another_info__(
                     brand_and_agency, company_entity)
             except Exception as e:
-                logging.warning(f'[警告] 竞品信息获取异常！{e}')
                 pass
             # 公司详情
             detail_resp = Request(TycPortraitApi.format(
