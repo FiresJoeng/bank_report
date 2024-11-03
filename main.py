@@ -4,6 +4,12 @@ import google.generativeai as genai
 import pypandoc
 import docx_to_md
 
+# 运行提示
+print('''
+[提示] 请确保您的网络已连接到Clash代理（端口7890），否则无法正常使用。
+[提示] 请确保您部署好了Python环境，并且已经正常执行过“Requirements Installer.bat”。
+''')
+
 # API 设置
 GEMINI_API_KEY = "AIzaSyDCNWIp1_9QqBfzYqAuRvzy4s8pfevQk5s"
 genai.configure(api_key=GEMINI_API_KEY)
