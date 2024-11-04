@@ -119,7 +119,7 @@ def create_report_checker_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
         AgentExecutor: 代理执行器。
     """
     logger.info("Creating report checker agent")
-    tools = [check_report, save_final_report]
+    tools = [check_report, save_final_report]#之后添加了函数需要在这里添加
     system_message = "您是一位报告检查专家，负责检查和修改调查报告。"
     
     agent = AgentExecutor.from_agent_and_tools(

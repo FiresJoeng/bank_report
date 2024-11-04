@@ -77,7 +77,7 @@ def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
         AgentExecutor: 代理执行器。
     """
     logger.info("Creating report generator agent")
-    tools = [fill_report_template, save_report_to_md]
+    tools = [fill_report_template, save_report_to_md]#之后添加了函数需要在这里添加
     system_message = "您是一位报告生成专家，负责根据企业信息生成调查报告。"
     
     agent = AgentExecutor.from_agent_and_tools(
@@ -90,6 +90,11 @@ def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
     logger.info("Report generator agent created successfully.")
     return agent
 
+# 读取Markdown模板文件
+def read_markdown_template(file_path: str) -> str:
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
 # 示例用法
 if __name__ == "__main__":
     # 初始化语言模型
@@ -99,18 +104,8 @@ if __name__ == "__main__":
     # 读取企业信息总表
     enterprise_data = pd.read_csv("output/enterprise_data_summary.csv")
 
-    # 报告模板
-    report_template = """
-    # 企业调查报告
-
-    ## 企业名称: {company_name}
-    ## 注册号: {registration_number}
-    ## 地址: {address}
-    ## 联系人: {contact_person}
-    ## 联系电话: {contact_number}
-
-    本报告基于企业信息总表生成，确保信息准确无误。
-    """
+    # 读取报告模板
+    report_template = read_markdown_template("path/to/your/template.md")
 
     # 填充报告
     filled_report = fill_report_template(enterprise_data, report_template)
