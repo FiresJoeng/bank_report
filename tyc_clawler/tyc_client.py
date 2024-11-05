@@ -2,7 +2,7 @@ import sys
 import json
 import logging
 from models import Company
-# 以下导入项待修复  
+# 以下导入项待修复
 # from models import CompanyShareholder, CompanyManager
 from urllib.parse import quote
 from util.httpclient import Request
