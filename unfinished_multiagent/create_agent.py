@@ -138,5 +138,3 @@ def create_note_agent(
     return agent
 
 logger.info("Agent creation module initialized")
-
-#main版本的代码
