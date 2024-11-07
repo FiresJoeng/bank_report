@@ -29,19 +29,45 @@ def fill_report_template(data: pd.DataFrame, template: str) -> str:
     """
     try:
         # 提取相关信息
-        company_name = data.get('公司名称', [''])[0]
-        registration_number = data.get('注册号', [''])[0]
-        address = data.get('地址', [''])[0]
-        contact_person = data.get('联系人', [''])[0]
-        contact_number = data.get('联系电话', [''])[0]
+        company_name = data.get('name', [''])[0]  # 名称
+        registration_number = data.get('register_code', [''])[0]  # 注册代码
+        address = data.get('company_address', [''])[0]  # 公司地址
+        register_address = data.get('register_address', [''])[0]  # 注册地址
+        contact_person = data.get('representative', [''])[0]  # 代表人
+        found_time = data.get('found_time', [''])[0]  # 成立时间
+        biz_scope = data.get('biz_scope', [''])[0]  # 经营范围
+        company_type = data.get('company_type', [''])[0]  # 公司类型
+        register_capital = data.get('register_capital', [''])[0]  # 注册资本
+        tags = data.get('tags', [''])[0]  # 标签
+        industry = data.get('industry', [''])[0]  # 行业
+        company_desc = data.get('company_desc', [''])[0]  # 公司描述
+        register_institute = data.get('register_institute', [''])[0]  # 注册机构
+        actual_capital = data.get('actual_capital', [''])[0]  # 实际资本
+        used_name = data.get('used_name', [''])[0]  # 曾用名
+        staffs = data.get('staffs', [''])[0]  # 员工人数
+        tax_address = data.get('tax_address', [''])[0]  # 税务地址
+        portraits = data.get('portraits', [''])[0]  # 企业形象
         
         # 填充模板
         filled_report = template.format(
             company_name=company_name,
             registration_number=registration_number,
             address=address,
+            register_address=register_address,
             contact_person=contact_person,
-            contact_number=contact_number
+            found_time=found_time,
+            biz_scope=biz_scope,
+            company_type=company_type,
+            register_capital=register_capital,
+            tags=tags,
+            industry=industry,
+            company_desc=company_desc,
+            register_institute=register_institute,
+            actual_capital=actual_capital,
+            used_name=used_name,
+            staffs=staffs,
+            tax_address=tax_address,
+            portraits=portraits
         )
         
         logger.info("Report template filled successfully.")
