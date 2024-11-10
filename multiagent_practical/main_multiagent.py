@@ -4,6 +4,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import AgentExecutor
 from logger import setup_logger
 
+
 # 设置日志记录
 logger = setup_logger()
 
@@ -33,7 +34,8 @@ from multiagent_practical.report_generator import (
 
 from multiagent_practical.report_checker import (
     check_report,
-    save_final_report
+    save_final_report,
+    create_report_checker_agent
 )
 
 def main_multiagent():
