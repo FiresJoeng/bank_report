@@ -75,7 +75,7 @@ def create_enterprise_data_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
     logger.info("企业数据代理创建成功")
     return agent
 
-# 示例用法
+# 示例用法 之后只运行main_multiagent.py
 if __name__ == "__main__":
     llm = ChatGoogleGenerativeAI(model="gemini-pro")
     enterprise_agent = create_enterprise_data_agent(llm)

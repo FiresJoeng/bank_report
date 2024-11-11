@@ -132,7 +132,7 @@ def create_report_checker_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
     logger.info("Report checker agent created successfully.")
     return agent
 
-# 示例用法
+# 示例用法 之后只运行main_multiagent.py
 if __name__ == "__main__":
     # 初始化语言模型
     llm = ChatGoogleGenerativeAI(model="gemini-pro", api_key=GEMINI_API_KEY)

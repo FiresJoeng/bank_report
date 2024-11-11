@@ -86,7 +86,7 @@ def read_markdown_template(file_path: str) -> str:
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
-# 示例用法
+# 示例用法 之后只运行main_multiagent.py
 if __name__ == "__main__":
     # 初始化语言模型
     llm = ChatGoogleGenerativeAI(model="gemini-pro", api_key=GEMINI_API_KEY)
