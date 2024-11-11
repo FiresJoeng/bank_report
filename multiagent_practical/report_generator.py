@@ -16,75 +16,48 @@ if not GEMINI_API_KEY or not LANGCHAIN_API_KEY:
     raise ValueError("请确保设置了GEMINI_API_KEY和LANGCHAIN_API_KEY环境变量。")
 
 @tool
-def fill_report_template(data: pd.DataFrame, template: str) -> str:
+def fill_report_template(data: pd.DataFrame, template: str, llm: ChatGoogleGenerativeAI) -> str:
     """
-    根据企业信息总表填充调查报告模板。
+    根据企业信息总表填充调查报告模板，并允许LLM对模板做修改。
     
     Args:
         data (pd.DataFrame): 企业信息总表。
         template (str): 报告模板。
+        llm (ChatGoogleGenerativeAI): 使用的语言模型。
     
     Returns:
-        str: 填充后的报告内容。
+        str: 填充并修改后的报告内容。
     """
     try:
-        # 提取相关信息
-        company_name = data.get('name', [''])[0]  # 名称
-        registration_number = data.get('register_code', [''])[0]  # 注册代码
-        address = data.get('company_address', [''])[0]  # 公司地址
-        register_address = data.get('register_address', [''])[0]  # 注册地址
-        contact_person = data.get('representative', [''])[0]  # 代表人
-        found_time = data.get('found_time', [''])[0]  # 成立时间
-        biz_scope = data.get('biz_scope', [''])[0]  # 经营范围
-        company_type = data.get('company_type', [''])[0]  # 公司类型
-        register_capital = data.get('register_capital', [''])[0]  # 注册资本
-        tags = data.get('tags', [''])[0]  # 标签
-        industry = data.get('industry', [''])[0]  # 行业
-        company_desc = data.get('company_desc', [''])[0]  # 公司描述
-        register_institute = data.get('register_institute', [''])[0]  # 注册机构
-        actual_capital = data.get('actual_capital', [''])[0]  # 实际资本
-        used_name = data.get('used_name', [''])[0]  # 曾用名
-        staffs = data.get('staffs', [''])[0]  # 员工人数
-        tax_address = data.get('tax_address', [''])[0]  # 税务地址
-        portraits = data.get('portraits', [''])[0]  # 企业形象
+        # 提取相关信息，确保字段存在
+        required_fields = [
+            'name', 'register_code', 'company_address', 'register_address',
+            'representative', 'found_time', 'biz_scope', 'company_type',
+            'register_capital', 'tags', 'industry', 'company_desc',
+            'register_institute', 'actual_capital', 'used_name',
+            'staffs', 'tax_address', 'portraits'
+        ]
         
+        for field in required_fields:
+            if field not in data.columns:
+                logger.error(f"缺少必要字段: {field}")
+                return "缺少必要字段，无法生成报告。"
+
         # 填充模板
-        filled_report = template.format(
-            company_name=company_name,
-            registration_number=registration_number,
-            address=address,
-            register_address=register_address,
-            contact_person=contact_person,
-            found_time=found_time,
-            biz_scope=biz_scope,
-            company_type=company_type,
-            register_capital=register_capital,
-            tags=tags,
-            industry=industry,
-            company_desc=company_desc,
-            register_institute=register_institute,
-            actual_capital=actual_capital,
-            used_name=used_name,
-            staffs=staffs,
-            tax_address=tax_address,
-            portraits=portraits
-        )
+        filled_report = template.format(**{field: data[field].iloc[0] for field in required_fields})
         
-        logger.info("Report template filled successfully.")
-        return filled_report
+        # 让LLM对填充后的模板进行合理的修改
+        modified_report = llm(filled_report)
+        
+        logger.info("Report template filled and modified successfully.")
+        return modified_report
     except Exception as e:
         logger.error(f"Error filling report template: {str(e)}")
         return "Error filling report template."
 
 @tool
 def save_report_to_md(report_content: str, output_path: str) -> None:
-    """
-    将生成的报告保存为Markdown文件。
-    
-    Args:
-        report_content (str): 报告内容。
-        output_path (str): 输出Markdown文件路径。
-    """
+    """将生成的报告保存为Markdown文件。"""
     try:
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(report_content)
@@ -93,17 +66,9 @@ def save_report_to_md(report_content: str, output_path: str) -> None:
         logger.error(f"Error saving report to Markdown: {str(e)}")
 
 def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
-    """
-    创建报告生成代理。
-    
-    Args:
-        llm (ChatGoogleGenerativeAI): 使用的语言模型。
-    
-    Returns:
-        AgentExecutor: 代理执行器。
-    """
+    """创建报告生成代理。"""
     logger.info("Creating report generator agent")
-    tools = [fill_report_template, save_report_to_md]#之后添加了函数需要在这里添加
+    tools = [fill_report_template, save_report_to_md]
     system_message = "您是一位报告生成专家，负责根据企业信息生成调查报告。"
     
     agent = AgentExecutor.from_agent_and_tools(
@@ -134,7 +99,7 @@ if __name__ == "__main__":
     report_template = read_markdown_template("path/to/your/template.md")
 
     # 填充报告
-    filled_report = fill_report_template(enterprise_data, report_template)
+    filled_report = fill_report_template(enterprise_data, report_template, llm)
 
     # 保存报告
-    save_report_to_md(filled_report, "output/enterprise_report.md") 
+    save_report_to_md(filled_report, "output/enterprise_report.md")
