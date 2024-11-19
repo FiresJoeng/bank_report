@@ -15,6 +15,15 @@ LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
 if not GEMINI_API_KEY or not LANGCHAIN_API_KEY:
     raise ValueError("请确保设置了GEMINI_API_KEY和LANGCHAIN_API_KEY环境变量。")
 
+
+@tool
+def log_report_generation_step(step_description: str) -> None:
+    """记录报告生成过程中的每一步操作。"""
+    logger.info(step_description)
+
+# 生成填写日志：在生成报告时，记录所有的操作步骤和结果，确保报告的生成过程是可追踪的。
+
+
 @tool
 def fill_report_template(data: pd.DataFrame, template: str, llm: ChatGoogleGenerativeAI) -> str:
     """

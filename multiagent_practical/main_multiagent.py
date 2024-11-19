@@ -29,7 +29,6 @@ from multiagent_practical.report_checker import (
     create_report_checker_agent
 )
 
-
 # 设置日志记录
 logger = setup_logger()
 
