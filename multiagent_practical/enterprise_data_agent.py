@@ -21,16 +21,19 @@ def read_csv_data(file_path: str) -> pd.DataFrame:
         return pd.DataFrame()
 
 @tool
-def read_excel_data(file_path: str) -> pd.DataFrame:
-    """读取企业信息Excel文件并返回DataFrame。"""
-    try:
-        logger.info(f"读取Excel数据: {file_path}")
-        df = pd.read_excel(file_path)
-        logger.info(f"成功读取Excel数据，行数: {len(df)}")
-        return df
-    except Exception as e:
-        logger.error(f"读取Excel数据时出错: {str(e)}")
-        return pd.DataFrame()
+def process_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """处理DataFrame，只保留指定的列。"""
+    columns_to_keep = [
+        'name', 'representative', 'found_time', 'company_address',
+        'register_address', 'biz_scope', 'company_type',
+        'register_capital', 'tags', 'industry', 
+        'company_desc', 'register_institute', 'actual_capital',
+        'used_name', 'staffs', 'tax_address', 'portraits'
+    ]
+    logger.info("处理DataFrame，保留指定的列")
+    processed_df = df[columns_to_keep] if all(col in df.columns for col in columns_to_keep) else pd.DataFrame()
+    logger.info(f"处理后的DataFrame行数: {len(processed_df)}")
+    return processed_df
 
 @tool
 def merge_dataframes(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.DataFrame:
@@ -62,7 +65,7 @@ def save_to_md(df: pd.DataFrame, output_path: str) -> None:
 def create_enterprise_data_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
     """创建企业数据代理。"""
     logger.info("创建企业数据代理")
-    tools = [read_csv_data, read_excel_data, merge_dataframes, save_to_csv, save_to_md]
+    tools = [read_csv_data, process_dataframe, merge_dataframes, save_to_csv, save_to_md]
     system_message = "您是一位企业数据处理专家，负责读取和合并企业信息数据。"
     
     agent = AgentExecutor.from_agent_and_tools(
@@ -82,11 +85,6 @@ if __name__ == "__main__":
 
     # 读取CSV和Excel文件
     csv_data = read_csv_data("path/to/enterprise_data.csv")
-    excel_data = read_excel_data("path/to/enterprise_data.xlsx")
-
-    # 合并数据
-    combined_data = merge_dataframes(csv_data, excel_data)
 
     # 输出结果
-    save_to_csv(combined_data, "output/enterprise_data_summary.csv")
-    save_to_md(combined_data, "output/enterprise_data_summary.md")
+    save_to_md(csv_data, "output/enterprise_data_summary.md")

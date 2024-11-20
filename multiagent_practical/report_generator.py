@@ -23,6 +23,12 @@ def log_report_generation_step(step_description: str) -> None:
 
 # 生成填写日志：在生成报告时，记录所有的操作步骤和结果，确保报告的生成过程是可追踪的。
 
+# 读取Markdown模板文件
+@tool
+def read_markdown_template(file_path: str) -> str:
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
 
 @tool
 def fill_report_template(data: pd.DataFrame, template: str, llm: ChatGoogleGenerativeAI) -> str:
@@ -74,11 +80,38 @@ def save_report_to_md(report_content: str, output_path: str) -> None:
     except Exception as e:
         logger.error(f"Error saving report to Markdown: {str(e)}")
 
+
 def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
     """创建报告生成代理。"""
     logger.info("Creating report generator agent")
     tools = [fill_report_template, save_report_to_md]
-    system_message = "您是一位报告生成专家，负责根据企业信息生成调查报告。"
+    system_message ="""
+    你是一名报告生成代理，负责根据提供的企业信息表格填充调查报告模板。你的任务是确保企业的关键信息被准确地填入模板的指定部分，并根据需要对模板内容进行合理的修改，使其更加连贯和符合实际情况。
+
+    ### 任务目标：
+    - 你将接收一个包含企业信息的表格（通常是 CSV 或 DataFrame 格式）和一个 Markdown 模板文件。
+    - 你的核心任务是将表格中的数据准确填入模板的相应部分，具体是申请人的企业基本信息部分。
+
+    ### 数据匹配：
+    - 请注意，模板中的字段名称与企业信息表格中的字段名称可能不完全一致。你需要仔细比对字段，并确保将正确的数据填入正确的位置。例如：
+    - 表格中可能使用 `name` 表示公司名称，而模板中则使用 "公司名称"。
+    - 类似地，`register_code` 对应 "注册号"，`company_address` 对应 "公司地址" 等。
+    - 在填充时，请确保所有必要的信息都被正确地填入。如果某个字段在表格中缺失，请记录该问题，并在日志中注明。
+
+    ### 日志记录：
+    - 你需要记录生成报告过程中的每个步骤。包括但不限于：
+     1. 开始填充模板。
+     2. 数据字段的匹配结果。
+      3. 模板修改后的结果。
+     4. 报告成功保存的路径。
+    - 如果遇到任何错误或缺失字段，需要及时记录并处理。
+
+    ### 错误处理：
+    - 如果在报告生成过程中发现任何错误（例如字段缺失、不匹配等），请记录详细的错误信息，并在日志中报错。
+    - 不要生成有严重缺陷的报告。确保数据的完整性和准确性是你的首要任务。
+
+    你的目标是生成一份完整、准确且可读的企业调查报告。请确保每一步都被详细记录，并确保最终输出符合要求。
+    """
     
     agent = AgentExecutor.from_agent_and_tools(
         agent=llm,
@@ -90,10 +123,6 @@ def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
     logger.info("Report generator agent created successfully.")
     return agent
 
-# 读取Markdown模板文件
-def read_markdown_template(file_path: str) -> str:
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return f.read()
 
 # 示例用法 之后只运行main_multiagent.py
 if __name__ == "__main__":
