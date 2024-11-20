@@ -25,7 +25,7 @@ def initial_check(report_content: str) -> str:
     
     Returns:
         str: 检查结果和建议。
-    """
+    """  
     logger.info("Performing initial check on the report.")
     if "企业调查报告" not in report_content:
         return "报告缺少标题，请添加 '企业调查报告'。"
