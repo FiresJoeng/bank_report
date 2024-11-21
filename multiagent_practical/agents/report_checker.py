@@ -3,17 +3,10 @@ import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import AgentExecutor
 from langchain.tools import tool
-from logger import setup_logger
+from util.logger import setup_logger
 
 # 设置日志记录
 logger = setup_logger()
-
-# 验证和加载API密钥
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
-
-if not GEMINI_API_KEY or not LANGCHAIN_API_KEY:
-    raise ValueError("请确保设置了GEMINI_API_KEY和LANGCHAIN_API_KEY环境变量。")
 
 @tool
 def initial_check(report_content: str) -> str:

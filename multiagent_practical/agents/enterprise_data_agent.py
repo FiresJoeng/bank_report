@@ -3,7 +3,7 @@ import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import AgentExecutor
 from langchain.tools import tool
-from logger import setup_logger
+from util.logger import setup_logger
 
 # 设置日志记录
 logger = setup_logger()

@@ -3,18 +3,10 @@ import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import AgentExecutor
 from langchain.tools import tool
-from logger import setup_logger
+from util.logger import setup_logger
 
 # 设置日志记录
 logger = setup_logger()
-
-# 验证和加载API密钥
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
-
-if not GEMINI_API_KEY or not LANGCHAIN_API_KEY:
-    raise ValueError("请确保设置了GEMINI_API_KEY和LANGCHAIN_API_KEY环境变量。")
-
 
 @tool
 def log_report_generation_step(step_description: str) -> None:
@@ -127,7 +119,7 @@ def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
 # 示例用法 之后只运行main_multiagent.py
 if __name__ == "__main__":
     # 初始化语言模型
-    llm = ChatGoogleGenerativeAI(model="gemini-pro", api_key=GEMINI_API_KEY)
+    llm = ChatGoogleGenerativeAI(model="gemini-pro")
     report_generator_agent = create_report_generator_agent(llm)
 
     # 读取企业信息总表
