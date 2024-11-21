@@ -9,11 +9,8 @@ from agents.report_checker import create_report_checker_agent
 logger = setup_logger()
 
 # 验证和加载API密钥
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
-
-if not GEMINI_API_KEY or not LANGCHAIN_API_KEY:
-    raise ValueError("请确保设置了GEMINI_API_KEY和LANGCHAIN_API_KEY环境变量。")
+GEMINI_API_KEY = "AIzaSyDCNWIp1_9QqBfzYqAuRvzy4s8pfevQk5s"
+LANGCHAIN_API_KEY = ""
 
 # 设置代理
 os.environ['https_proxy'] = 'http://127.0.0.1:7890'

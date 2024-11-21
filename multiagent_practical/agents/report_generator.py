@@ -18,6 +18,7 @@ def log_report_generation_step(step_description: str) -> None:
 # 读取Markdown模板文件
 @tool
 def read_markdown_template(file_path: str) -> str:
+    """读取Markdown模板文件。"""
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
