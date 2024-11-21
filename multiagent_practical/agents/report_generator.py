@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import AgentExecutor
 from langchain.tools import tool
@@ -7,6 +6,7 @@ from util.logger import setup_logger
 
 # 设置日志记录
 logger = setup_logger()
+
 
 @tool
 def log_report_generation_step(step_description: str) -> None:
@@ -16,6 +16,8 @@ def log_report_generation_step(step_description: str) -> None:
 # 生成填写日志：在生成报告时，记录所有的操作步骤和结果，确保报告的生成过程是可追踪的。
 
 # 读取Markdown模板文件
+
+
 @tool
 def read_markdown_template(file_path: str) -> str:
     """读取Markdown模板文件。"""
@@ -27,12 +29,12 @@ def read_markdown_template(file_path: str) -> str:
 def fill_report_template(data: pd.DataFrame, template: str, llm: ChatGoogleGenerativeAI) -> str:
     """
     根据企业信息总表填充调查报告模板，并允许LLM对模板做修改。
-    
+
     Args:
         data (pd.DataFrame): 企业信息总表。
         template (str): 报告模板。
         llm (ChatGoogleGenerativeAI): 使用的语言模型。
-    
+
     Returns:
         str: 填充并修改后的报告内容。
     """
@@ -45,23 +47,25 @@ def fill_report_template(data: pd.DataFrame, template: str, llm: ChatGoogleGener
             'register_institute', 'actual_capital', 'used_name',
             'staffs', 'tax_address', 'portraits'
         ]
-        
+
         for field in required_fields:
             if field not in data.columns:
                 logger.error(f"缺少必要字段: {field}")
                 return "缺少必要字段，无法生成报告。"
 
         # 填充模板
-        filled_report = template.format(**{field: data[field].iloc[0] for field in required_fields})
-        
+        filled_report = template.format(
+            **{field: data[field].iloc[0] for field in required_fields})
+
         # 让LLM对填充后的模板进行合理的修改
         modified_report = llm(filled_report)
-        
+
         logger.info("Report template filled and modified successfully.")
         return modified_report
     except Exception as e:
         logger.error(f"Error filling report template: {str(e)}")
         return "Error filling report template."
+
 
 @tool
 def save_report_to_md(report_content: str, output_path: str) -> None:
@@ -78,7 +82,7 @@ def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
     """创建报告生成代理。"""
     logger.info("Creating report generator agent")
     tools = [fill_report_template, save_report_to_md]
-    system_message ="""
+    system_message = """
     你是一名报告生成代理，负责根据提供的企业信息表格填充调查报告模板。你的任务是确保企业的关键信息被准确地填入模板的指定部分，并根据需要对模板内容进行合理的修改，使其更加连贯和符合实际情况。
 
     ### 任务目标：
@@ -105,14 +109,14 @@ def create_report_generator_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
 
     你的目标是生成一份完整、准确且可读的企业调查报告。请确保每一步都被详细记录，并确保最终输出符合要求。
     """
-    
+
     agent = AgentExecutor.from_agent_and_tools(
         agent=llm,
         tools=tools,
         prompt=system_message,
         verbose=True
     )
-    
+
     logger.info("Report generator agent created successfully.")
     return agent
 
