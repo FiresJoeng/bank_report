@@ -61,7 +61,7 @@ def create_enterprise_data_agent(llm: ChatGoogleGenerativeAI) -> AgentExecutor:
 
     agent = AgentExecutor.from_agent_and_tools(
         agent=llm,
-        tools=None,
+        tools=tools,
         prompt=system_message,
         verbose=True
     )
