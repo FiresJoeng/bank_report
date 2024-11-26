@@ -1,4 +1,3 @@
-import pandas as pd
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import AgentExecutor
 from util.logger import setup_logger
