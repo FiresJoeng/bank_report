@@ -1,6 +1,8 @@
 import logging
 # Configure logging
-def setup_logger(log_file:str='logs/multiagent_output.log'):
+
+
+def setup_logger(log_file: str = 'logs/multiagent_output.log'):
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
 
@@ -13,7 +15,8 @@ def setup_logger(log_file:str='logs/multiagent_output.log'):
     console_handler.setLevel(logging.INFO)
 
     # Formatter
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
 
