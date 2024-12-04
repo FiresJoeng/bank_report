@@ -41,7 +41,7 @@ def process_static_data(data: dict) -> dict:
         "company_address",
         "representative",
         "industry",
-        # 可以根据需要添加更多字段
+        # 后续根据实际情况修改
     ]
     
     processed_data = {field: data.get(field) for field in static_fields}
