@@ -50,15 +50,16 @@ def generate_json_output(companies, key):
         "steps": [
             {
                 "explanation": f"Start with the search keyword '{key}'.",
-                "output": f"Searching for companies with keyword '{key}'"
+                "output": f"Searching for companies with keyword '{key}'\n"
             }
         ],
-        "final_answer": f"Found {len(companies)} companies with keyword '{key}'"
+        "final_answer": f"Found {len(companies)} companies with keyword '{key}'\n"
     }
     for i, company in enumerate(companies, start=1):
+        company_info = "\n".join([f"{k}: {v}" for k, v in company.__dict__.items()])
         json_output["steps"].append({
             "explanation": f"Company {i}: {company.name}",
-            "output": json.dumps(company.__dict__, ensure_ascii=False)
+            "output": company_info + "\n"
         })
     return json_output
 
@@ -85,7 +86,7 @@ def crawler_start():
 
         # 生成 JSON 格式的输出
         json_output = generate_json_output(items, key)
-        with open(f'./tyc_json_files/“{key}”的天眼查搜索结果.json', 'w', encoding='utf-8') as jsonfile:
+        with open(f'./json_files/“{key}”的天眼查搜索结果.json', 'w', encoding='utf-8') as jsonfile:
             json.dump(json_output, jsonfile, ensure_ascii=False, indent=4)
 
     keys = globals().get('keywords', [])

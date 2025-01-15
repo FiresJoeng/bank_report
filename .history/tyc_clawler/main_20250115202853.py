@@ -85,7 +85,7 @@ def crawler_start():
 
         # 生成 JSON 格式的输出
         json_output = generate_json_output(items, key)
-        with open(f'./tyc_json_files/“{key}”的天眼查搜索结果.json', 'w', encoding='utf-8') as jsonfile:
+        with open(f'./json_files/“{key}”的天眼查搜索结果.json', 'w', encoding='utf-8') as jsonfile:
             json.dump(json_output, jsonfile, ensure_ascii=False, indent=4)
 
     keys = globals().get('keywords', [])

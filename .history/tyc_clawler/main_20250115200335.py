@@ -4,7 +4,6 @@ import urllib3
 import logging
 from tyc_client import TycClient
 from logging.handlers import TimedRotatingFileHandler
-import json
 
 urllib3.disable_warnings()
 
@@ -82,11 +81,6 @@ def crawler_start():
             for elem in items:
                 logging.info(elem.__str__())
                 writer.writerow(elem.__dict__)  # 写入每个公司的信息
-
-        # 生成 JSON 格式的输出
-        json_output = generate_json_output(items, key)
-        with open(f'./tyc_json_files/“{key}”的天眼查搜索结果.json', 'w', encoding='utf-8') as jsonfile:
-            json.dump(json_output, jsonfile, ensure_ascii=False, indent=4)
 
     keys = globals().get('keywords', [])
     for key in keys:
