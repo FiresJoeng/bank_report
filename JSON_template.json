@@ -1,0 +1,28 @@
+{
+    "companies": [
+      {
+        "id": "{{id}}",
+        "name": "{{name}}",
+        "short_name": "{{short_name}}",
+        "representative": "{{representative}}",
+        "found_time": "{{found_time}}",
+        "address": {
+          "company": "{{company_address}}",
+          "register": "{{register_address}}",
+          "tax": "{{tax_address}}"
+        },
+        "location": {
+          "province": "{{province}}",
+          "city": "{{city}}",
+          "district": "{{district}}"
+        },
+        "english_name": "{{english_name}}",
+        "staffs": "{{staffs}}",
+        "register_institute": "{{register_institute}}",
+        "financing_round": "{{financing_round}}",
+        "competitions": "{{competitions}}",
+        "actual_capital": "{{actual_capital}}"
+      }
+    ]
+  }
+  
