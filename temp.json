@@ -1,0 +1,22 @@
+{
+    "company_name": "John Doe",
+    "age": 30,
+    "isStudent": false,
+    "skills": ["JavaScript", "Python", "SQL"],
+    "address": {
+      "street": "123 Main St",
+      "city": "New York",
+      "zipCode": "10001"
+    },
+    "projects": [
+      {
+        "title": "Portfolio Website",
+        "completed": true
+      },
+      {
+        "title": "E-commerce Platform",
+        "completed": false
+      }
+    ]
+  }
+  
